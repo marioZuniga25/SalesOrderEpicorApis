@@ -100,7 +100,8 @@ function App() {
       {
         ds: ds,
         partNum: "MG-MP-01-A32-5076",
-        substitutePartExists: false,
+        lSubstitutePartsExist: false,
+        uomCode: "PZS",
         isPhantom: false,
         multipleMatch: false,
         promptForRev: false
@@ -112,8 +113,8 @@ function App() {
 
     // Cambiar cantidad
     res = await axios.post(
-      `${baseURL}/ChangeSellingQty`,
-      { ds: ds, sellingQuantity: 10 },
+      `${baseURL}/ChangeSellingQuantity`,
+      { ds: ds, ipSellingQuantity: 10, lKeepUnitPrice: true },
       config
     )
 
@@ -126,7 +127,7 @@ function App() {
     linea.OverridePriceList = true
     linea.LockPrice = true
     linea.RowMod = "U"
-/*
+
     // MASTERUPDATE para la línea
     res = await axios.post(
       `${baseURL}/MasterUpdate`,
@@ -141,6 +142,7 @@ function App() {
       },
       config
     )
+    /*
 
     console.log("🔥 Orden completa creada correctamente. Número:", orderNum)
 */
