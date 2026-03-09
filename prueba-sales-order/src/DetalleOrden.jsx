@@ -80,7 +80,7 @@ const DetalleOrden = () => {
                         <tr key={index}>
                             <td>{item.PartNum}</td>
                             <td>{item.PartDescription}</td>
-                            <td><input name='cant' type="number" min="1" defaultValue={1} width={"50%"}/></td>
+                            <td><input name='cant' type="number" min="1" defaultValue={1} /></td>
                             <td>{item.UnitPrice}</td>
                         </tr>
                     ))}
