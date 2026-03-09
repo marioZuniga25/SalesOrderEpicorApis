@@ -18,7 +18,21 @@ const DetalleOrden = () => {
 
     const baseURLUD = "https://ser-kinetic/kineticprod/api/v2/odata/19009/Ice.BO.UD03Svc";
 
-    const completarPedido = () => {
+    const getNewNumPedido = async () => {
+        try {
+            const res = await axios.get(
+                `https://ser-kinetic/kineticProd/api/v2/odata/19009/BaqSvc/getNewNumPedido/Data`,
+                config
+            );
+            return res.data.value[0].Calculated_NewPedidoNum;
+        } catch (error) {
+            console.error("Error obteniendo nuevo NumPedido:", error);
+            return null;
+        }
+    };
+
+    const completarPedido = async () => {
+        var numPedido = await getNewNumPedido();
         try {
             carrito.forEach(parte => {
                 const res = axios.post(
@@ -28,24 +42,12 @@ const DetalleOrden = () => {
                         ds: {
                             UD03: [
                                 {
-                                    Company: "string",
                                     Key1: parte.PartNum,
                                     Key2: parte.PartDescription,
-                                    Key3: "string",
-                                    Key4: "string",
-                                    Key5: "string",
-                                    Character01: "string",
-                                    Character02: "string",
-                                    Character03: "string",
-                                    Character04: "string",
-                                    Character05: "string",
-                                    Character06: "string",
-                                    Character07: "string",
-                                    Character08: "string",
-                                    Character09: "string",
-                                    Character10: "string",
-                                    Number01: 0,
-                                    Number02: 0,
+                                    Key3: numPedido,
+                                    Key4: "Pendiente Revision",
+                                    //Number01: parte.Cantidad,
+                                    Number02: parte.UnitPrice,
                                     RowMod: "A"
                                 }
                             ],
@@ -54,12 +56,12 @@ const DetalleOrden = () => {
                     }
                 );
             });
+                alert("Pedido completado con éxito. Número de pedido: " + numPedido);
         } catch (error) {
             console.error("Error completando el pedido:", error);
         }
 
 
-        alert("Aqui se completa el pedido jaja.");
     }
    
 
@@ -80,7 +82,7 @@ const DetalleOrden = () => {
                         <tr key={index}>
                             <td>{item.PartNum}</td>
                             <td>{item.PartDescription}</td>
-                            <td><input name='cant' type="number" min="1" defaultValue={1} /></td>
+                            <td><input name='cant' type="number" min="1" defaultValue={1} style={{"width": "40%"}}/></td>
                             <td>{item.UnitPrice}</td>
                         </tr>
                     ))}
