@@ -1,10 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 
 const IngresoOrden = () => {
   const [carrito,setCarrito] = useState([]);
   const [parts, setParts] = useState([]);
   const [isCarritoOpen, setIsCarritoOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedCarrito = JSON.parse(localStorage.getItem("carrito"));
+    if (storedCarrito) {    
+        setCarrito(storedCarrito);
+    }
+  }, []);
 
   const config = {
     headers: {
@@ -14,7 +23,7 @@ const IngresoOrden = () => {
     }
   }
   
-    const baseURLUD = "https://ser-kinetic/kineticprod/api/v2/Erp.BO.SalesOrderSvc"
+    
     const baseURLParts = "https://ser-kinetic/kineticprod/api/v2/odata/19009/Erp.BO.PartSvc"
     
     const buscarPartes = async (Partnum) => {
@@ -35,8 +44,9 @@ const IngresoOrden = () => {
     }
 
 
-    const crearOrden = async () => {
-        
+    const irOrden = async () => {
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        navigate('/detalle-orden');
     }
     return (
     <>
@@ -65,6 +75,7 @@ const IngresoOrden = () => {
               ))}
             </tbody>
           </table>
+          <button onClick={irOrden}>Ir a la Orden</button>
         </div>
       )}
     </div>
@@ -85,7 +96,7 @@ const IngresoOrden = () => {
                 <td>{part.PartNum}</td>
                 <td>{part.PartDescription}</td>
                 <td>{part.UnitPrice}</td>
-                <td><button onClick={() => {setCarrito([...carrito, part]); console.log(carrito);}}>Agregar</button></td>
+                <td><button onClick={() => {setCarrito([...carrito, part]);}}>Agregar</button></td>
               </tr>
             ))}
           </tbody>
