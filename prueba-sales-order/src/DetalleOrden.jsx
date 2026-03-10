@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const DetalleOrden = () => {
@@ -7,6 +7,7 @@ const DetalleOrden = () => {
     const navigate = useNavigate();
     //const carrito = location.state?.carrito || [];
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const cantidadRefs = useRef([]);
 
     const config = {
         headers: {
@@ -34,7 +35,14 @@ const DetalleOrden = () => {
     const completarPedido = async () => {
         var numPedido = await getNewNumPedido();
         try {
-            carrito.forEach(parte => {
+            carrito.forEach((parte, index) => {
+                // Obtener la cantidad del input
+                const cantidadInput = cantidadRefs.current[index];
+                const cantidad = cantidadInput ? parseInt(cantidadInput.value) : 1;
+                
+                // Agregar cantidad al objeto de parte
+                const parteConCantidad = { ...parte, Cantidad: cantidad };
+                
                 const res = axios.post(
                     `${baseURLUD}/UpdateExt`,
                     {
@@ -42,18 +50,20 @@ const DetalleOrden = () => {
                         ds: {
                             UD03: [
                                 {
-                                    Key1: parte.PartNum,
-                                    Key2: parte.PartDescription,
+                                    Key1: parteConCantidad.PartNum,
+                                    Key2: parteConCantidad.PartDescription,
                                     Key3: numPedido,
                                     Key4: "Pendiente Revision",
-                                    //Number01: parte.Cantidad,
-                                    Number02: parte.UnitPrice,
+                                    Number01: parteConCantidad.Cantidad,
+                                    Number02: parteConCantidad.UnitPrice,
                                     RowMod: "A"
                                 }
                             ],
                         },
-                        config
-                    }
+                        continueProcessingOnError: true,
+                        rollbackParentOnChildError: true,
+                    },
+                    config
                 );
             });
                 alert("Pedido completado con éxito. Número de pedido: " + numPedido);
@@ -82,7 +92,7 @@ const DetalleOrden = () => {
                         <tr key={index}>
                             <td>{item.PartNum}</td>
                             <td>{item.PartDescription}</td>
-                            <td><input name='cant' type="number" min="1" defaultValue={1} style={{"width": "40%"}}/></td>
+                            <td><input ref={el => cantidadRefs.current[index] = el} name='cant' type="number" min="1" defaultValue={1} style={{"width": "40%"}}/></td>
                             <td>{item.UnitPrice}</td>
                         </tr>
                     ))}
