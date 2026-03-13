@@ -31,7 +31,6 @@ export default function LandingPage() {
       {/* HEADER */}
       <header className="header">
 
-        {/* BOTON HAMBURGUESA */}
         <button
           ref={buttonRef}
           className={`hamburger ${menuOpen ? "open" : ""}`}
