@@ -1,0 +1,69 @@
+.login-container {
+  height: 98vh;
+  width: 100%;
+  background-image: url("https://imgs.search.brave.com/0i4ZgG_JiFufaNGwqHZsz-fGWdqay2nDjIPMR6wyUA0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c25yLmNvbS5teC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNC8w/MS9zaHV0dGVyc3Rv/Y2tfMTk5NTkyNzEz/NC1taW4tMTAyNHg2/ODAuanBn"); /* tu imagen */
+  background-size: cover;
+}
+
+.overlay {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+}
+
+.logo-section {
+  color: red;
+  /* background-color: white; */
+  margin-left: 20%;
+}
+
+.logo {
+  font-size: 80px;
+  font-weight: bold;
+}
+
+.login-card {
+  background: #ee191f;
+  padding: 2%;
+  border-radius: 20px;
+  width: 25%;
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-right: 10%;
+  align-items: center;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.login-card h2 {
+  color: rgb(27, 27, 27);
+  margin: 0;
+}
+
+.login-card input {
+  padding: 15px;
+  border-radius: 20px;
+  border: 2px solid rgb(27, 27, 27);
+}
+
+.login-card button {
+  margin-top: 10px;
+  padding: 3%;
+  border-radius: 10px;
+  border: none;
+  background: rgb(27, 27, 27);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  width: 40%;
+  transition: 0.3s;
+}
+
+.login-card button:hover {
+  background: white;
+  color: rgb(27, 27, 27);
+  transition: 0.3s;
+}
