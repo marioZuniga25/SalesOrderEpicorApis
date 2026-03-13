@@ -1,7 +1,27 @@
 import React from "react";
 import "./Login.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const credenciales = {
+    username: "",
+    password: ""
+  };
+
+  const handleLogin = () => {
+    const usernameInput = document.getElementById("user");
+    const passwordInput = document.getElementById("pwd");
+    credenciales.username = usernameInput.value;
+    credenciales.password = passwordInput.value;
+    if (credenciales.username === "134" && credenciales.password === "admin123") {
+      alert("Inicio de sesión exitoso");
+      navigate("/home");
+    } else {
+      alert("Credenciales incorrectas. Por favor, inténtalo de nuevo.");
+    }
+  }
+
   return (
     <div className="login-container">
       
@@ -16,12 +36,12 @@ export default function Login() {
         <div className="login-card">
             <h1>Inicio de Sesión</h1>
           <h2>Usuario:</h2>
-          <input type="text" placeholder="Usuario" />
+          <input id="user" type="text" placeholder="Usuario" />
 
           <h2>Contraseña:</h2>
-          <input type="password" placeholder="Contraseña" />
+          <input id="pwd" type="password" placeholder="Contraseña" />
 
-          <button>Login</button>
+          <button onClick={handleLogin}>Login</button>
         </div>
 
       </div>
