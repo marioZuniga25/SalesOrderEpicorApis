@@ -5,9 +5,10 @@
 }
 
 .container {
-  height: 100vh;
-  background: #f5f5f5;
+  min-height: 100vh;
+  background: white;
   font-family: Arial, Helvetica, sans-serif;
+  position: relative;
 }
 
 /* HEADER */
@@ -17,13 +18,12 @@
   top: 20px;
   left: 20px;
   right: 20px;
+  z-index: 20;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
-/* HAMBURGER */
 
 .hamburger {
   width: 50px;
@@ -47,8 +47,6 @@
   transition: 0.3s;
 }
 
-/* animación */
-
 .hamburger.open span:nth-child(1) {
   transform: rotate(180deg);
 }
@@ -71,8 +69,6 @@
     height: 15vh;
 }
 
-/* MENU LATERAL */
-
 .sideMenu {
   position: fixed;
   top: 0;
@@ -86,6 +82,7 @@
   border-radius: 25px;
   transition: left 0.35s ease;
   box-shadow: 5px 0 20px rgba(36, 36, 36, 0.1);
+  z-index: 25;
 }
 
 .sideMenu.show {
@@ -102,21 +99,60 @@
   cursor: pointer;
 }
 
-/* HERO */
-
-.hero {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  background-color: white;
+.sideMenu li.active {
+  font-weight: 700;
+  text-decoration: underline;
 }
 
-.heroImage {
-  width: 450px;
+.sideMenu a {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+}
+
+.sideMenu a.active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.hero {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  background: url("https://imgs.search.brave.com/C09tPIfQI2X2pl_VHXme95pAeSzwBRKnKtqpMnamu_s/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdDIu/ZGVwb3NpdHBob3Rv/cy5jb20vMTAwMTMz/NS8xMDY5Mi9pLzQ1/MC9kZXBvc2l0cGhv/dG9zXzEwNjkyODc3/Mi1zdG9jay1waG90/by1zZXQtZGlmZmVy/ZW50LWJlYXJpbmdz/LWlzb2xhdGVkLXdo/aXRlLmpwZz9mb3Jj/ZWpwZWc9dHJ1ZQ") center no-repeat;
+  background-size: 450px auto;
+}
+
+.content-card {
+  width: min(100%, 1100px);
+  min-height: 70vh;
+  padding: 40px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.432);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(15px);
+  overflow: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.homeBrand {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.logo-home {
+  height: 15vh;
+  margin-top: 60vh;
 }
 
 .brand h1 {

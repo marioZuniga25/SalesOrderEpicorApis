@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 
-const IngresoOrden = () => {
+const IngresoOrden = ({ onGoToOrder }) => {
   const [carrito,setCarrito] = useState([]);
   const [parts, setParts] = useState([]);
   const [isCarritoOpen, setIsCarritoOpen] = useState(false);
@@ -46,7 +46,11 @@ const IngresoOrden = () => {
 
     const irOrden = async () => {
         localStorage.setItem("carrito", JSON.stringify(carrito));
-        navigate('/detalle-orden');
+        if (onGoToOrder) {
+          onGoToOrder();
+        } else {
+          navigate('/home/estadoPedido');
+        }
     }
     return (
     <>
