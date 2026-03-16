@@ -1,8 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./Login";
-import LandingPage, { LandingHome, Productos } from "./Landing";
+import LandingPage, { LandingHome } from "./Landing";
+import Productos from "./Productos";
 import DetalleOrden from "./DetalleOrden";
-import IngresoOrden from "../../prueba-sales-order/src/IngresoOrden";
+import IngresoOrden from "./IngresoOrden";
 
 function App() {
   return (

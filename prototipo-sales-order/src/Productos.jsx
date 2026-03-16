@@ -1,26 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import './IngresoOrden.css';
 import axios from "axios"
-
-const IngresoOrden = ({ onGoToOrder }) => {
-  const [carrito,setCarrito] = useState([]);
-  const [parts, setParts] = useState([]);
-  const [isCarritoOpen, setIsCarritoOpen] = useState(false);
+ 
+const Productos = () => {
+ const [parts, setParts] = useState([]);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
   const itemsPerPage = 10;
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedCarrito = JSON.parse(localStorage.getItem("carrito"));
-    if (storedCarrito) {    
-        setCarrito(storedCarrito);
-    }
-  }, []);
-
-  useEffect(() => {
-    buscarPartes(); 
-  }, []);
+  const currentParts = parts.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(parts.length / itemsPerPage);
 
   const config = {
     headers: {
@@ -29,51 +18,56 @@ const IngresoOrden = ({ onGoToOrder }) => {
       "X-API-Key": "g9Hps4BsmlZ8XsfIopSvvan6baJCdC7z35ZbwVx0PDHDN"
     }
   }
-  
-    
-    const baseURLParts = "https://centralusdtedu00.epicorsaas.com/SaaS951/api/v2/odata/19009E6/Erp.BO.PartSvc"
+const baseURLParts = "https://centralusdtedu00.epicorsaas.com/SaaS951/api/v2/odata/19009E6/Erp.BO.PartSvc"
     
     const buscarPartes = async (Partnum = '') => {
         try {
-            let url = `${baseURLParts}/Parts`;
+            let url = `${baseURLParts}/PartBinInfoes`;
             if (Partnum) {
                 url += `?%24filter=contains%28PartNum%2C%27${Partnum}%27%29`;
             }
             const res = await axios.get(url, config);
             setParts(res.data.value);
             setCurrentPage(1); 
-            console.log("Partes encontradas:", res.data.value);
+            setStartIndex(0);
+            setEndIndex(10);
         } catch (error) {
             console.error("Error buscando partes:", error);
         }
     }
 
-    const totalPages = Math.ceil(parts.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentParts = parts.slice(startIndex, endIndex);
+    useEffect(() => {
+        buscarPartes(); 
+    }, []);
 
-  
+    useEffect(() => {
+        setStartIndex((currentPage - 1) * itemsPerPage);
+        setEndIndex(currentPage * itemsPerPage);
+    }, [currentPage]);
 
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        buscarPartes(value);
+    }
 
-    
-    return (
-    <>
-    
-        <h1>IngresoOrden</h1>
-        <form action="" className='orden-form'>
-          <h3>OC:<input type="text" /></h3>
-          <h3>Fecha Necesidad: <input type="date" /> </h3>
-        </form>
-        <h3 className='search-bar'>Buscar Parte: <input type="text" onChange={(e) => buscarPartes(e.target.value)}/></h3>
-        <div className='Pedido-container' >
-          <table className='part-table'>
+  return (
+    <div className="content">
+      <h1>Productos</h1>
+      <input
+        type="text"
+        placeholder="Buscar por PartNum"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        style={{ marginBottom: '20px', padding: '5px', width: '200px' }}
+      />
+      <table className='part-table'>
             <thead>
               <tr className='encabezado-partes'>
                 <th>Part ID</th>
                 <th>Description</th>
                 <th>Price</th>
-                <th></th>
+                <th>Existencias</th>
               </tr>
             </thead>
             <tbody >
@@ -82,19 +76,18 @@ const IngresoOrden = ({ onGoToOrder }) => {
                   <td>{part.PartNum}</td>
                   <td>{part.PartDescription}</td>
                   <td>{part.UnitPrice}</td>
-                  <td><button onClick={() => {
+                  <td>{part.OnhandQty}</td>
+                  {/* <td><button onClick={() => {
                     const newCarrito = [...carrito, part];
                     setCarrito(newCarrito);
                     localStorage.setItem("carrito", JSON.stringify(newCarrito));
                     window.dispatchEvent(new Event('carritoUpdated'));
-                  }}>Agregar</button></td>
+                  }}>Agregar</button></td> */}
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-        
-        {totalPages > 1 && (
+          {totalPages > 1 && (
           <div className="pagination" style={{ marginTop: '20px', textAlign: 'center' }}>
             <button 
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
@@ -113,9 +106,8 @@ const IngresoOrden = ({ onGoToOrder }) => {
             </button>
           </div>
         )}
-        
-    </>
-  )
+    </div>
+  );
 }
 
-export default IngresoOrden
+export default Productos

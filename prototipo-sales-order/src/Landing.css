@@ -59,6 +59,76 @@
   transform: rotate(180deg); 
 }
 
+.cart-button {
+  background: #eb1c24;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-button .pi {
+  font-size: 18px;
+}
+
+.cart-count {
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.carrito-dropdown {
+  position: absolute;
+  top: 90px;
+  right: 10px;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 999;
+  max-height: 400px;
+  overflow-y: auto;
+  min-width: 320px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.carrito-dropdown table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.carrito-dropdown th,
+.carrito-dropdown td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.carrito-dropdown button {
+  background: #eb1c24;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
 /* LOGO */
 
 .logo-Nav {

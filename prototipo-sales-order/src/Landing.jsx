@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./Landing.css";
 
 export function LandingHome() {
@@ -22,22 +22,28 @@ export function LandingHome() {
   );
 }
 
-export function Productos() {
-  return (
-    <div className="content">
-      <h1>Productos</h1>
-      <p>En esta sección puedes buscar y seleccionar los productos que deseas agregar a tu orden.</p>
-    </div>
-  );
-}
+
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const [carrito, setCarrito] = useState([]);
+  const [isCarritoOpen, setIsCarritoOpen] = useState(false);
 
   useEffect(() => {
+    const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    setCarrito(storedCarrito);
+
+    const handleCarritoUpdate = () => {
+      const stored = JSON.parse(localStorage.getItem("carrito")) || [];
+      setCarrito(stored);
+    };
+
+    window.addEventListener('carritoUpdated', handleCarritoUpdate);
+
     function handleClickOutside(event) {
       if (
         menuRef.current &&
@@ -52,11 +58,24 @@ export default function LandingPage() {
     document.addEventListener("click", handleClickOutside);
 
     return () => {
+      window.removeEventListener('carritoUpdated', handleCarritoUpdate);
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
+
+  const removeFromCarrito = (index) => {
+    const newCarrito = carrito.filter((_, i) => i !== index);
+    setCarrito(newCarrito);
+    localStorage.setItem("carrito", JSON.stringify(newCarrito));
+    window.dispatchEvent(new Event('carritoUpdated'));
+  };
+
+  const irOrden = () => {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    navigate('/home/estadoPedido');
+  };
 
   const isHomeRoute = ["/home", "/home/"].includes(location.pathname);
 
@@ -91,7 +110,41 @@ export default function LandingPage() {
           alt="Nachi"
           className="logo-Nav"
         />
+
+        {/* CARRITO */}
+        <button onClick={() => setIsCarritoOpen(!isCarritoOpen)} className="cart-button">
+          <i className="pi pi-shopping-cart" aria-hidden="true" />
+          <span className="cart-count">{carrito.length}</span>
+        </button>
       </header>
+
+      {/* CARRITO DROPDOWN */}
+      {isCarritoOpen && (
+        <div className="carrito-dropdown">
+          <h2>Carrito</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Part ID</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {carrito.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.PartNum}</td>
+                  <td>{item.PartDescription}</td>
+                  <td>{item.UnitPrice}</td>
+                  <td><button onClick={() => removeFromCarrito(index)}>Remover</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button onClick={irOrden}>Ir a la Orden</button>
+        </div>
+      )}
 
       {/* MENU LATERAL */}
       <nav ref={menuRef} className={`sideMenu ${menuOpen ? "show" : ""}`}>
@@ -100,13 +153,13 @@ export default function LandingPage() {
             <NavLink to="/home" end onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Inicio</NavLink>
           </li>
           <li className={activeMenu === "productos" ? "active" : ""}>
-            <NavLink to="/home/productos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Productos</NavLink>
+            <NavLink to="/home/productos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Existencias</NavLink>
           </li>
           <li className={activeMenu === "pedidos" ? "active" : ""}>
-            <NavLink to="/home/pedidos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Pedidos</NavLink>
+            <NavLink to="/home/pedidos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Realizar Pedido</NavLink>
           </li>
           <li className={activeMenu === "estadoPedido" ? "active" : ""}>
-            <NavLink to="/home/estadoPedido" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Estado Pedido</NavLink>
+            <NavLink to="/home/estadoPedido" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Estado de Pedidos</NavLink>
           </li>
         </ul>
       </nav>

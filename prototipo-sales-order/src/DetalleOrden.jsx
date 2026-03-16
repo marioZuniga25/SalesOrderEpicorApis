@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import './IngresoOrden.css';
 
 const DetalleOrden = () => {
     const location = useLocation();
@@ -17,12 +18,12 @@ const DetalleOrden = () => {
         }
     }
 
-    const baseURLUD = "https://ser-kinetic/kineticprod/api/v2/odata/19009/Ice.BO.UD03Svc";
+    const baseURLUD = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/Ice.BO.UD03Svc";
 
     const getNewNumPedido = async () => {
         try {
             const res = await axios.get(
-                `https://ser-kinetic/kineticProd/api/v2/odata/19009/BaqSvc/getNewNumPedido/Data`,
+                `https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/getNewNumPedido/Data`,
                 config
             );
             return res.data.value[0].Calculated_NewPedidoNum;
@@ -36,17 +37,17 @@ const DetalleOrden = () => {
         var numPedido = await getNewNumPedido();
         try {
             carrito.forEach((parte, index) => {
-                // Obtener la cantidad del input
+              
                 const cantidadInput = cantidadRefs.current[index];
                 const cantidad = cantidadInput ? parseInt(cantidadInput.value) : 1;
                 
-                // Agregar cantidad al objeto de parte
+                
                 const parteConCantidad = { ...parte, Cantidad: cantidad };
                 
                 const res = axios.post(
                     `${baseURLUD}/UpdateExt`,
                     {
-                        // Datos del pedido
+                        
                         ds: {
                             UD03: [
                                 {
@@ -78,9 +79,9 @@ const DetalleOrden = () => {
     return (
         <div>
             <h1>Detalle de la Orden</h1>
-            <table>
+            <table className='part-table'>
                 <thead>
-                    <tr>
+                    <tr className='encabezado-partes'>
                         <th>Part ID</th>
                         <th>Description</th>
                         <th>Cantidad</th>
@@ -99,7 +100,7 @@ const DetalleOrden = () => {
                 </tbody>
             </table>
             <button onClick={completarPedido}>Completar Pedido</button>
-            <button onClick={() => navigate('/')}>Volver</button>
+            <button onClick={() => navigate('/home/pedidos')}>Volver</button>
         </div>
     );
 };

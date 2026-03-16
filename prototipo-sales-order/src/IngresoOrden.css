@@ -1,0 +1,59 @@
+.Pedido-container {
+    height: 400px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.part-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    table-layout: fixed;
+}
+
+.part-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: white;
+}
+
+.encabezado-partes{
+    background-color: #424242;
+    color: white;
+    font-weight: bold;
+}
+
+.encabezado-partes th {
+    padding: 6px 8px;
+    text-align: left;
+    border: black solid 2px;
+}
+
+.encabezado-partes th:nth-child(1) {
+    width: 20%;
+}
+
+.encabezado-partes th:nth-child(2) {
+    width: 50%;
+}
+
+.encabezado-partes th:nth-child(3) {
+    width: 15%;
+}
+
+.encabezado-partes th:nth-child(4) {
+    width: 10%;
+}
+
+/* 
+.part-table tbody {
+} */
+
+.part-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #eee;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
