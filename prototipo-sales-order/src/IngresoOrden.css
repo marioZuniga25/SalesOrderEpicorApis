@@ -57,3 +57,11 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
+
+
+.orderhed {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}

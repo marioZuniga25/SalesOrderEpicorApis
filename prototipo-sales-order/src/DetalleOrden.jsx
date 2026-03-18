@@ -9,16 +9,20 @@ const DetalleOrden = () => {
     //const carrito = location.state?.carrito || [];
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     const cantidadRefs = useRef([]);
-
+    const needbyRef = useRef();
+    const clienteRef = useRef();
+    const poRef = useRef();
     const config = {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Basic aW50cmFuZXQ6MTIzNA==",
-            "X-API-Key": "Kbeuc31ajfYCv6oawGQjcxmnGd2xY3qLfP5lmAKJv6nlR"
+            "Authorization": "Basic MTkwMDktZXBpY29yOlRyYWluMTgh",
+            "X-API-Key": "g9Hps4BsmlZ8XsfIopSvvan6baJCdC7z35ZbwVx0PDHDN"
         }
     }
 
     const baseURLUD = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/Ice.BO.UD03Svc";
+    const baseURLUD4 = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/Ice.BO.UD04Svc";
+
 
     const getNewNumPedido = async () => {
         try {
@@ -26,7 +30,13 @@ const DetalleOrden = () => {
                 `https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/getNewNumPedido/Data`,
                 config
             );
+            if (res.data.value.length === null || res.data.value.length === 0) {
+                console.log("No se recibió un nuevo número de pedido");
+                return 1;
+            }else {
             return res.data.value[0].Calculated_NewPedidoNum;
+        }
+
         } catch (error) {
             console.error("Error obteniendo nuevo NumPedido:", error);
             return null;
@@ -35,6 +45,39 @@ const DetalleOrden = () => {
 
     const completarPedido = async () => {
         var numPedido = await getNewNumPedido();
+        var cliente = clienteRef.current ? clienteRef.current.value : "";
+        var po = poRef.current ? poRef.current.value : "";
+        var needbyDate = needbyRef.current ? needbyRef.current.value : "";  
+
+        console.log("Cliente: ", cliente);
+        console.log("PO: ", po);
+        console.log("Fecha de Necesidad: ", needbyDate);
+        try {
+            const resHead = await axios.post(
+                `${baseURLUD4}/UpdateExt`,
+                {
+                    ds: {
+                        UD04: [
+                            {
+                                Key1: numPedido.toString(),
+                                Key2: cliente.toString(),
+                                Key3: po.toString(),
+                                Key4: "Pendiente Revision",
+                                Date01: needbyDate.toString(),
+                                RowMod: "A"
+                            }
+                        ],
+                    },
+                    continueProcessingOnError: true,
+                    rollbackParentOnChildError: true,
+                },
+                config
+            );
+            console.log("Respuesta UD04:", resHead.data);
+        } catch (error) {
+            console.error("Error completando el encabezado del pedido:", error.response ? error.response.data : error.message);
+        }
+
         try {
             carrito.forEach((parte, index) => {
               
@@ -51,10 +94,10 @@ const DetalleOrden = () => {
                         ds: {
                             UD03: [
                                 {
-                                    Key1: parteConCantidad.PartNum,
-                                    Key2: parteConCantidad.PartDescription,
-                                    Key3: numPedido,
-                                    Key4: "Pendiente Revision",
+                                    Key1: numPedido,
+                                    Key2: (index + 1).toString(),
+                                    Key3: parteConCantidad.PartNum.toString(),
+                                    Key4: parteConCantidad.PartDescription.toString(),
                                     Number01: parteConCantidad.Cantidad,
                                     Number02: parteConCantidad.UnitPrice,
                                     RowMod: "A"
@@ -66,9 +109,19 @@ const DetalleOrden = () => {
                     },
                     config
                 );
+                console.log("NumPedido: ", numPedido);
+        
+            console.log("PartNum: ", parteConCantidad.PartNum);
+            console.log("PartNum: ", parteConCantidad.PartDescription);
+            console.log("PartDesc: ", parteConCantidad.Cantidad);
+            console.log("UnitPrice: ", parteConCantidad.UnitPrice);
+            console.log("linea: ", index + 1);
+            console.log("Respuesta UD03:", res.data);
             });
+            
+            
                 alert("Pedido completado con éxito. Número de pedido: " + numPedido);
-        } catch (error) {
+        } catch ( error) {
             console.error("Error completando el pedido:", error);
         }
 
@@ -79,6 +132,13 @@ const DetalleOrden = () => {
     return (
         <div>
             <h1>Detalle de la Orden</h1>
+            <div className="orderhed">
+                    <h3>Fecha de Necesidad: <input ref={needbyRef} id='needby' type="date" /></h3>
+                    <h3>Cliente: <input ref={clienteRef} id='cliente' type="text" /></h3>
+                    <h3>PO: <input ref={poRef} id='po' type="text" /></h3>
+           
+            </div>
+            
             <table className='part-table'>
                 <thead>
                     <tr className='encabezado-partes'>
