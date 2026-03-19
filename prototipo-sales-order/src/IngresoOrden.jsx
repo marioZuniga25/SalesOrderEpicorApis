@@ -19,6 +19,19 @@ const IngresoOrden = ({ onGoToOrder }) => {
   }, []);
 
   useEffect(() => {
+    const handleCarritoUpdate = () => {
+      const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
+      setCarrito(storedCarrito);
+    };
+
+    window.addEventListener('carritoUpdated', handleCarritoUpdate);
+
+    return () => {
+      window.removeEventListener('carritoUpdated', handleCarritoUpdate);
+    };
+  }, []);
+
+  useEffect(() => {
     buscarPartes(); 
   }, []);
 

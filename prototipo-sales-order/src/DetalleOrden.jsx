@@ -1,17 +1,27 @@
 import axios from 'axios';
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './IngresoOrden.css';
 
 const DetalleOrden = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    //const carrito = location.state?.carrito || [];
-    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const [carrito, setCarrito] = useState([]);
     const cantidadRefs = useRef([]);
     const needbyRef = useRef();
     const clienteRef = useRef();
     const poRef = useRef();
+
+    useEffect(() => {
+        const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        setCarrito(storedCarrito);
+    }, []);
+
+    const eliminarProducto = (index) => {
+        const newCarrito = carrito.filter((_, i) => i !== index);
+        setCarrito(newCarrito);
+        localStorage.setItem("carrito", JSON.stringify(newCarrito));
+    };
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -146,6 +156,7 @@ const DetalleOrden = () => {
                         <th>Description</th>
                         <th>Cantidad</th>
                         <th>Price</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -155,6 +166,7 @@ const DetalleOrden = () => {
                             <td>{item.PartDescription}</td>
                             <td><input ref={el => cantidadRefs.current[index] = el} name='cant' type="number" min="1" defaultValue={1} style={{"width": "40%"}}/></td>
                             <td>{item.UnitPrice}</td>
+                            <td><button onClick={() => eliminarProducto(index)}>Eliminar</button></td>
                         </tr>
                     ))}
                 </tbody>
