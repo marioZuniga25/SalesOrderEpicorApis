@@ -100,7 +100,9 @@ const IngresoOrden = ({ onGoToOrder }) => {
                     setCarrito(newCarrito);
                     localStorage.setItem("carrito", JSON.stringify(newCarrito));
                     window.dispatchEvent(new Event('carritoUpdated'));
-                  }}>Agregar</button></td>
+                  }}
+                  className='btn-Agregar'
+                  >Agregar</button></td>
                 </tr>
               ))}
             </tbody>
@@ -113,6 +115,7 @@ const IngresoOrden = ({ onGoToOrder }) => {
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
               disabled={currentPage === 1}
               style={{ marginRight: '10px', padding: '5px 10px' }}
+              className='pag-btn'
             >
               Anterior
             </button>
@@ -121,6 +124,7 @@ const IngresoOrden = ({ onGoToOrder }) => {
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
               disabled={currentPage === totalPages}
               style={{ marginLeft: '10px', padding: '5px 10px' }}
+              className='pag-btn'
             >
               Siguiente
             </button>

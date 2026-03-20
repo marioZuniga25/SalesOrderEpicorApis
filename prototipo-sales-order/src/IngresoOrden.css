@@ -40,7 +40,7 @@
 }
 
 .encabezado-partes th:nth-child(3) {
-    width: 15%;
+    width: 10%;
 }
 
 .encabezado-partes th:nth-child(4) {
@@ -64,4 +64,83 @@
     flex-direction: row;
     justify-content: space-between;
     margin-bottom: 20px;
+}
+
+.pag-btn {
+    background-color: #ee191f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: 0.2s;
+}
+
+.pag-btn:hover:not(:disabled) {
+    background-color: #c71515;
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+
+.pag-btn:active:not(:disabled) {
+    transform: scale(0.95);
+    
+}
+
+.btn-detalle {
+    background-color: #ee191f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 5px 10px;
+    transition: 0.2s;
+}
+
+.btn-Eliminar {
+    background-color: #ee191f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 5px 10px;
+    transition: 0.2s;
+}
+
+.btn-detalle:hover {
+    background-color: #c71515;
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+
+.btn-Eliminar:hover {
+    background-color: #c71515;
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+.btn-Eliminar:active {
+    transform: scale(0.95);
+}
+
+.orden-form {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    border: #424242 solid 1px;
+    padding: 10px;
+    gap: 15px;
+}
+
+.btn-Agregar {
+    background-color: #ee191f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 3px 5px;
+    transition: 0.2s;
 }

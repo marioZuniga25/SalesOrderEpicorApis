@@ -166,13 +166,13 @@ const DetalleOrden = () => {
                             <td>{item.PartDescription}</td>
                             <td><input ref={el => cantidadRefs.current[index] = el} name='cant' type="number" min="1" defaultValue={1} style={{"width": "40%"}}/></td>
                             <td>{item.UnitPrice}</td>
-                            <td><button onClick={() => eliminarProducto(index)}>Eliminar</button></td>
+                            <td><button onClick={() => eliminarProducto(index)} className='btn-Eliminar'>Eliminar</button></td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <button onClick={completarPedido}>Completar Pedido</button>
-            <button onClick={() => navigate('/home/pedidos')}>Volver</button>
+            <button onClick={completarPedido} className='btn-detalle'>Completar Pedido</button>
+            <button onClick={() => navigate('/home/pedidos')} className='btn-detalle'>Volver</button>
         </div>
     );
 };

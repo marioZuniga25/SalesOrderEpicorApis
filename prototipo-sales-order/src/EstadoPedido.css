@@ -1,0 +1,36 @@
+.table-container {
+    max-height: 400px; 
+    max-width: 100%;
+    overflow: auto;
+}
+
+
+.pedido-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    table-layout: fixed;
+}
+
+.pedido-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: white;
+}
+
+.pedido-table th,
+.pedido-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+.pedido-table th {
+    background-color: #424242;
+    color: white;
+
+}
+
+.pedido-table tr:hover {
+    background-color: #adadad;
+}

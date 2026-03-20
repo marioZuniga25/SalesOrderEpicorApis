@@ -4,6 +4,7 @@ import LandingPage, { LandingHome } from "./Landing";
 import Productos from "./Productos";
 import DetalleOrden from "./DetalleOrden";
 import IngresoOrden from "./IngresoOrden";
+import EstadoPedido  from "./EstadoPedido";
 
 function App() {
   return (
@@ -15,9 +16,10 @@ function App() {
           <Route index element={<LandingHome />} />
           <Route path="productos" element={<Productos />} />
           <Route path="pedidos" element={<IngresoOrden />} />
-          <Route path="estadoPedido" element={<DetalleOrden />} />
+          <Route path="estadoPedidos" element={<EstadoPedido />} />
+          <Route path="ingreso-orden" element={<IngresoOrden />} />
         </Route>
-        <Route path="/ingreso-orden" element={<IngresoOrden />} />
+        
       </Routes>
     </BrowserRouter>
   );

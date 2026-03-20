@@ -74,7 +74,7 @@ export default function LandingPage() {
 
   const irOrden = () => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
-    navigate('/home/estadoPedido');
+    navigate('/home/detalle-orden');
   };
 
   const isHomeRoute = ["/home", "/home/"].includes(location.pathname);
@@ -82,7 +82,9 @@ export default function LandingPage() {
   const activeMenu = (() => {
     if (location.pathname.endsWith("/productos")) return "productos";
     if (location.pathname.endsWith("/pedidos")) return "pedidos";
-    if (location.pathname.endsWith("/estadoPedido")) return "estadoPedido";
+    if (location.pathname.endsWith("/estadoPedidos")) return "estadoPedidos";
+    if (location.pathname.endsWith("/detalle-orden")) return "detalle-orden";
+    
     return "inicio";
   })();
 
@@ -158,8 +160,8 @@ export default function LandingPage() {
           <li className={activeMenu === "pedidos" ? "active" : ""}>
             <NavLink to="/home/pedidos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Realizar Pedido</NavLink>
           </li>
-          <li className={activeMenu === "estadoPedido" ? "active" : ""}>
-            <NavLink to="/home/estadoPedido" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Estado de Pedidos</NavLink>
+          <li className={activeMenu === "estadoPedidos" ? "active" : ""}>
+            <NavLink to="/home/estadoPedidos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Estado de Pedidos</NavLink>
           </li>
         </ul>
       </nav>
