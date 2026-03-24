@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import './EstadoPedido.css';
 import axios from 'axios';
 
- const EstadoPedido = () => {
+const EstadoPedido = () => {
 
     const [Pedidos, setPedidos] = useState([]);
+    const [selectedPedido, setSelectedPedido] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [showConfirm, setShowConfirm] = useState(false);
     const itemsPerPage = 10;
     const config = {
         headers: {
@@ -20,7 +22,7 @@ import axios from 'axios';
     }, []);
 
     const baseURLPedidos = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/PedidosTV/Data?%24filter=UD04_Key2%20eq%20%272%27"
-    
+
     const buscarPedidos = async () => {
         try {
             const res = await axios.get(baseURLPedidos, config);
@@ -32,14 +34,26 @@ import axios from 'axios';
         }
     }
 
+
+    const detallesPedido = (pedido) => {
+        setSelectedPedido(pedido);
+        console.log("Pedido seleccionado:", pedido);
+    }
+
+    const cancelModal = () => {
+        setShowConfirm(true);
+    }
+
     const totalPages = Math.ceil(Pedidos.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentPedidos = Pedidos.slice(startIndex, endIndex);
 
+
+
     return (
         <>
-            <h1 style={{justifySelf: 'center', margin: '10px'}}>EstadoPedido</h1>
+            <h1 style={{ justifySelf: 'center', margin: '10px' }}>EstadoPedido</h1>
             <div className='table-container'>
                 <table className='pedido-table'>
                     <thead>
@@ -51,7 +65,7 @@ import axios from 'axios';
                     </thead>
                     <tbody>
                         {currentPedidos.map((pedido, index) => (
-                            <tr key={index}>
+                            <tr key={index} onClick={() => detallesPedido(pedido)} style={{ cursor: 'pointer' }}>
                                 <td>{pedido.UD04_Key1}</td>
                                 <td>{pedido.UD04_Key3}</td>
                                 <td>{pedido.UD04_Key4}</td>
@@ -62,16 +76,16 @@ import axios from 'axios';
             </div>
             {totalPages > 1 && (
                 <div className="pagination" style={{ marginTop: '20px', textAlign: 'center' }}>
-                    <button 
-                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+                    <button
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                         disabled={currentPage === 1}
                         style={{ marginRight: '10px', padding: '5px 10px' }}
                     >
                         Anterior
                     </button>
                     <span>Página {currentPage} de {totalPages}</span>
-                    <button 
-                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+                    <button
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                         disabled={currentPage === totalPages}
                         style={{ marginLeft: '10px', padding: '5px 10px' }}
                     >
@@ -79,6 +93,40 @@ import axios from 'axios';
                     </button>
                 </div>
             )}
+
+            <div className="detalle-modal" hidden={!selectedPedido}>
+
+                {selectedPedido && (
+
+                    <div className="detalle-content">
+                        <i className="pi pi-times" id='close-icon' onClick={() => setSelectedPedido(null)}></i>
+                        <h2>Detalles del Pedido</h2>
+                        <br />
+                        <p><strong>Pedido:</strong> {selectedPedido.UD04_Key1}</p>
+                        <p><strong>Orden de Compra:</strong> {selectedPedido.UD04_Key3}</p>
+                        <p><strong>Estado:</strong> {selectedPedido.UD04_Key4}</p>
+                        <button className='btn-cancel' onClick={cancelModal}>
+                            Cancelar Pedido
+                        </button>
+                    </div>
+                )}
+                {showConfirm && (
+                    <div className="confirm-overlay">
+                        <div className="cancelar-pedido">
+                            <h2>¿Desea cancelar el pedido?</h2>
+                            <button className='btn-confirm'>
+                                Confirmar
+                            </button>
+                            <button
+                                className='btn-cancel'
+                                onClick={() => setShowConfirm(false)}
+                            >
+                                Volver
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </>
     )
 }
