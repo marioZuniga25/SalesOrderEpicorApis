@@ -14,8 +14,10 @@ export default function Login() {
     const passwordInput = document.getElementById("pwd");
     credenciales.username = usernameInput.value;
     credenciales.password = passwordInput.value;
-    if (credenciales.username === "134" && credenciales.password === "admin123") {
+    if (credenciales.username === "2" && credenciales.password === "admin123") {
       alert("Inicio de sesión exitoso");
+      localStorage.setItem("isLoggedIn", true);
+      localStorage.setItem("username", credenciales.username);
       navigate("/home");
     } else {
       alert("Credenciales incorrectas. Por favor, inténtalo de nuevo.");

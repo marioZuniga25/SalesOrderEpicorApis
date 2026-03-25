@@ -123,7 +123,7 @@ const DetalleOrden = () => {
         
             console.log("PartNum: ", parteConCantidad.PartNum);
             console.log("PartNum: ", parteConCantidad.PartDescription);
-            console.log("PartDesc: ", parteConCantidad.Cantidad);
+            console.log("Cantidad: ", parteConCantidad.Cantidad);
             console.log("UnitPrice: ", parteConCantidad.UnitPrice);
             console.log("linea: ", index + 1);
             console.log("Respuesta UD03:", res.data);

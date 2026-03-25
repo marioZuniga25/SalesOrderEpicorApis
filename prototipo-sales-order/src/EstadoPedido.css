@@ -45,8 +45,7 @@
     border: 1px solid #ccc;
     border-radius: 15px;
     z-index: 1000;
-
-    width: 400px;  
+    width: 100%;  
     max-width: 90%;
 }
 
@@ -145,3 +144,4 @@
     min-width:300px;
     text-align:center;
 }
+

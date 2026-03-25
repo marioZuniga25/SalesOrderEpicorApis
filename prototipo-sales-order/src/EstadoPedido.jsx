@@ -6,6 +6,7 @@ const EstadoPedido = () => {
 
     const [Pedidos, setPedidos] = useState([]);
     const [selectedPedido, setSelectedPedido] = useState(null);
+    const [detallePedido, setDetallePedido] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [showConfirm, setShowConfirm] = useState(false);
     const itemsPerPage = 10;
@@ -22,6 +23,7 @@ const EstadoPedido = () => {
     }, []);
 
     const baseURLPedidos = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/PedidosTV/Data?%24filter=UD04_Key2%20eq%20%272%27"
+    const baseurlDetallePedido = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/DetallePedidos/Data";
 
     const buscarPedidos = async () => {
         try {
@@ -37,6 +39,15 @@ const EstadoPedido = () => {
 
     const detallesPedido = (pedido) => {
         setSelectedPedido(pedido);
+        const pedidoId = pedido.UD04_Key1;
+        axios.get(`${baseurlDetallePedido}?Pedido=${pedidoId}`, config)
+            .then(res => {
+                console.log("Detalles del pedido:", res.data.value);
+                setDetallePedido(res.data.value);
+            })
+            .catch(error => {
+                console.error("Error obteniendo detalles del pedido:", error);
+            });
         console.log("Pedido seleccionado:", pedido);
     }
 
@@ -105,6 +116,25 @@ const EstadoPedido = () => {
                         <p><strong>Pedido:</strong> {selectedPedido.UD04_Key1}</p>
                         <p><strong>Orden de Compra:</strong> {selectedPedido.UD04_Key3}</p>
                         <p><strong>Estado:</strong> {selectedPedido.UD04_Key4}</p>
+                        <h3>Partes del Pedido:</h3>
+                        <table className='detail-table'>
+                            <thead>
+                                <tr className='encabezado-partes'>
+                                    <th>Part ID</th>
+                                    <th>Description</th>
+                                    <th>Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {detallePedido && detallePedido.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.UD03_Key2}</td>
+                                        <td>{item.UD03_Key3}</td>
+                                        <td>{item.UD03_Number01}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                         <button className='btn-cancel' onClick={cancelModal}>
                             Cancelar Pedido
                         </button>

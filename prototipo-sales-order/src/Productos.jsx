@@ -18,11 +18,11 @@ const Productos = () => {
       "X-API-Key": "g9Hps4BsmlZ8XsfIopSvvan6baJCdC7z35ZbwVx0PDHDN"
     }
   }
-const baseURLParts = "https://centralusdtedu00.epicorsaas.com/SaaS951/api/v2/odata/19009E6/Erp.BO.PartSvc"
+const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/Existencias/Data"
     
     const buscarPartes = async (Partnum = '') => {
         try {
-            let url = `${baseURLParts}/PartBinInfoes`;
+            let url = `${baseURLParts}`;
             if (Partnum) {
                 url += `?%24filter=contains%28PartNum%2C%27${Partnum}%27%29`;
             }
@@ -66,17 +66,15 @@ const baseURLParts = "https://centralusdtedu00.epicorsaas.com/SaaS951/api/v2/oda
               <tr className='encabezado-partes'>
                 <th>Part ID</th>
                 <th>Description</th>
-                <th>Price</th>
                 <th>Existencias</th>
               </tr>
             </thead>
-            <tbody >
-              {currentParts.map(part => (
-                <tr key={part.PartNum}>
-                  <td>{part.PartNum}</td>
-                  <td>{part.PartDescription}</td>
-                  <td>{part.UnitPrice}</td>
-                  <td>{part.OnhandQty}</td>
+            <tbody>
+              {currentParts.map((part, index) => (
+                <tr key={part.PartBin_PartNum + index}>
+                  <td>{part.PartBin_PartNum}</td>
+                  <td>{part.Part_PartDescription}</td>
+                  <td>{part.PartBin_OnhandQty}</td>
                   {/* <td><button onClick={() => {
                     const newCarrito = [...carrito, part];
                     setCarrito(newCarrito);

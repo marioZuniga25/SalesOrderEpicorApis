@@ -74,10 +74,10 @@ const IngresoOrden = ({ onGoToOrder }) => {
     <>
     
         <h1>IngresoOrden</h1>
-        <form action="" className='orden-form'>
+        {/* <form action="" className='orden-form'>
           <h3>OC:<input type="text" /></h3>
           <h3>Fecha Necesidad: <input type="date" /> </h3>
-        </form>
+        </form> */}
         <h3 className='search-bar'>Buscar Parte: <input type="text" onChange={(e) => buscarPartes(e.target.value)}/></h3>
         <div className='Pedido-container' >
           <table className='part-table'>
