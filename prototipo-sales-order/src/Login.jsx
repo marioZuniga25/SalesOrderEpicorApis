@@ -30,7 +30,7 @@ export default function Login() {
         <div className="white-bar">
           <div className="flixa-logo">
             <p>Powered By</p>
-            <img src="public/FlixaLogo.jpeg" alt="Flixa Logo" />
+            <img src="/FlixaLogo.jpeg" alt="Flixa Logo" />
           </div>
 
         </div>

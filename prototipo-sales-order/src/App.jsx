@@ -1,4 +1,5 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, HashRouter } from "react-router-dom";
+
 import Login from "./Login";
 import LandingPage, { LandingHome } from "./Landing";
 import Productos from "./Productos";
@@ -7,9 +8,10 @@ import IngresoOrden from "./IngresoOrden";
 import EstadoPedido from "./EstadoPedido";
 import PrivateRoute from "./PrivateRoute";
 
+
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Login />} />
 
@@ -30,7 +32,7 @@ function App() {
         </Route>
 
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

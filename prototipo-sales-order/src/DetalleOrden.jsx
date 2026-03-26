@@ -55,7 +55,7 @@ const DetalleOrden = () => {
 
     const completarPedido = async () => {
         var numPedido = await getNewNumPedido();
-        var cliente = clienteRef.current ? clienteRef.current.value : "";
+        var cliente = localStorage.getItem("username") || "ClienteDesconocido";
         var po = poRef.current ? poRef.current.value : "";
         var needbyDate = needbyRef.current ? needbyRef.current.value : "";  
 
@@ -144,7 +144,7 @@ const DetalleOrden = () => {
             <h1>Detalle de la Orden</h1>
             <div className="orderhed">
                     <h3>Fecha de Necesidad: <input ref={needbyRef} id='needby' type="date" /></h3>
-                    <h3>Cliente: <input ref={clienteRef} id='cliente' type="text" /></h3>
+                    {/* <h3>Cliente: <input ref={clienteRef} id='cliente' type="text" /></h3> */}
                     <h3>PO: <input ref={poRef} id='po' type="text" /></h3>
            
             </div>
