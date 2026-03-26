@@ -133,6 +133,9 @@
 
 .logo-Nav {
   height: 10vh;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .logo-home{
@@ -235,4 +238,30 @@
   font-size: 14px;
   color: #333;
   text-align: center;
+}
+
+.user-section{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    margin-left:10px;
+}
+
+.logout-icon{
+    cursor:pointer;
+    margin-left:10px;
+    transition: 0.2s;
+  }
+
+.logout-icon:hover{
+    color:red;
+    transform: scale(1.25);
+    transition: 0.2s;
+}
+
+.right-section{
+    display:flex;
+    flex-direction: row;
+    align-items:center;
+    gap:10px;
 }

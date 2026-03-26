@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./Landing.css";
+import axios from "axios";
 
 export function LandingHome() {
   return (
@@ -32,8 +33,24 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [carrito, setCarrito] = useState([]);
   const [isCarritoOpen, setIsCarritoOpen] = useState(false);
+  const user = localStorage.getItem("username");
 
+  const custdetailURL = `https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/Erp.BO.CustomerSvc/GetByID?custNum=${user}`;
   useEffect(() => {
+
+    axios.get(custdetailURL, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Basic MTkwMDktZXBpY29yOlRyYWluMTgh",
+        "X-API-Key": "g9Hps4BsmlZ8XsfIopSvvan6baJCdC7z35ZbwVx0PDHDN"
+      }
+    })
+      .then(res => {
+        const custName = res.data.returnObj.Customer[0].Name;
+        localStorage.setItem("customerName", custName);
+      })
+      .catch(err => console.error("Error fetching customer details:", err));
+
     const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
     setCarrito(storedCarrito);
 
@@ -62,7 +79,7 @@ export default function LandingPage() {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-
+  const cusname = localStorage.getItem("customerName");
   const closeMenu = () => setMenuOpen(false);
 
   const removeFromCarrito = (index) => {
@@ -84,9 +101,17 @@ export default function LandingPage() {
     if (location.pathname.endsWith("/pedidos")) return "pedidos";
     if (location.pathname.endsWith("/estadoPedidos")) return "estadoPedidos";
     if (location.pathname.endsWith("/detalle-orden")) return "detalle-orden";
-    
+
     return "inicio";
   })();
+
+
+
+  const logout = () => {
+    localStorage.removeItem("auth");
+    localStorage.removeItem("username");
+    navigate("/");
+  };
 
   return (
     <div className="container">
@@ -112,12 +137,19 @@ export default function LandingPage() {
           alt="Nachi"
           className="logo-Nav"
         />
+        <div className="right-section">
+          <button onClick={() => setIsCarritoOpen(!isCarritoOpen)} className="cart-button">
+            <i className="pi pi-shopping-cart" aria-hidden="true" />
+            <span className="cart-count">{carrito.length}</span>
+          </button>
 
-        {/* CARRITO */}
-        <button onClick={() => setIsCarritoOpen(!isCarritoOpen)} className="cart-button">
-          <i className="pi pi-shopping-cart" aria-hidden="true" />
-          <span className="cart-count">{carrito.length}</span>
-        </button>
+          <div className="user-section">
+            <i className="pi pi-user"></i>
+            <span>{cusname}</span>
+          </div>
+
+          <i className="pi pi-sign-out logout-icon" onClick={logout}></i>
+        </div>
       </header>
 
       {/* CARRITO DROPDOWN */}

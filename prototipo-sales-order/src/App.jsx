@@ -4,15 +4,23 @@ import LandingPage, { LandingHome } from "./Landing";
 import Productos from "./Productos";
 import DetalleOrden from "./DetalleOrden";
 import IngresoOrden from "./IngresoOrden";
-import EstadoPedido  from "./EstadoPedido";
+import EstadoPedido from "./EstadoPedido";
+import PrivateRoute from "./PrivateRoute";
 
 function App() {
   return (
-     <BrowserRouter>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        
-        <Route path="/home/*" element={<LandingPage />}>
+
+        <Route
+          path="/home/*"
+          element={
+            <PrivateRoute>
+              <LandingPage />
+            </PrivateRoute>
+          }
+        >
           <Route index element={<LandingHome />} />
           <Route path="productos" element={<Productos />} />
           <Route path="pedidos" element={<IngresoOrden />} />
@@ -20,7 +28,7 @@ function App() {
           <Route path="ingreso-orden" element={<IngresoOrden />} />
           <Route path="detalle-orden" element={<DetalleOrden />} />
         </Route>
-        
+
       </Routes>
     </BrowserRouter>
   );
