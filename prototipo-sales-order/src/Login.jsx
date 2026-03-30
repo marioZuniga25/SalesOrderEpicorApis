@@ -1,12 +1,23 @@
 import React from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
+import withReactContent from "sweetalert2-react-content";
+import Swal from 'sweetalert2'
 
 export default function Login() {
   const navigate = useNavigate();
   const credenciales = {
     username: "",
     password: ""
+  };
+  const MySwal = withReactContent(Swal)
+
+  const showAlert = () => {
+    MySwal.fire({
+      title: <h1>Inicio de sesión exitoso.</h1>,
+      text: '',
+      icon: 'success'
+    })
   };
 
   const handleLogin = () => {
@@ -15,7 +26,8 @@ export default function Login() {
     credenciales.username = usernameInput.value;
     credenciales.password = passwordInput.value;
     if (credenciales.username === "2" && credenciales.password === "admin123") {
-      alert("Inicio de sesión exitoso");
+      //alert("Inicio de sesión exitoso");
+      showAlert();
       localStorage.setItem("auth", "true");
       localStorage.setItem("username", credenciales.username);
       navigate("/home");

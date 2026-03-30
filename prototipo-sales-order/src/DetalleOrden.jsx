@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './IngresoOrden.css';
+import withReactContent from 'sweetalert2-react-content';
+import Swal from 'sweetalert2'
 
 const DetalleOrden = () => {
     const location = useLocation();
@@ -11,6 +13,14 @@ const DetalleOrden = () => {
     const needbyRef = useRef();
     const clienteRef = useRef();
     const poRef = useRef();
+    const comentariosRef = useRef();
+    const MySwal = withReactContent(Swal)
+    const showAlert = () => {
+    MySwal.fire({
+      title: <p>Pedido completado✅</p>,
+      text: 'Puede revisar el estado de su pedido en la sección "Estado de Pedido".',
+      icon: 'success'
+    })};
 
     useEffect(() => {
         const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
@@ -58,10 +68,12 @@ const DetalleOrden = () => {
         var cliente = localStorage.getItem("username") || "ClienteDesconocido";
         var po = poRef.current ? poRef.current.value : "";
         var needbyDate = needbyRef.current ? needbyRef.current.value : "";  
+        var comentarios = comentariosRef.current ? comentariosRef.current.value : "";
 
         console.log("Cliente: ", cliente);
         console.log("PO: ", po);
         console.log("Fecha de Necesidad: ", needbyDate);
+        console.log("Comentarios: ", comentarios);
         try {
             const resHead = await axios.post(
                 `${baseURLUD4}/UpdateExt`,
@@ -72,8 +84,10 @@ const DetalleOrden = () => {
                                 Key1: numPedido.toString(),
                                 Key2: cliente.toString(),
                                 Key3: po.toString(),
-                                Key4: "Pendiente Revision",
+                                Key4: "",
                                 Date01: needbyDate.toString(),
+                                Character02: comentarios.toString(),
+                                Character01: "Pendiente Revision",
                                 RowMod: "A"
                             }
                         ],
@@ -130,7 +144,9 @@ const DetalleOrden = () => {
             });
             
             
-                alert("Pedido completado con éxito. Número de pedido: " + numPedido);
+                //alert("Pedido completado con éxito. Número de pedido: " + numPedido);
+                showAlert();
+                localStorage.removeItem("carrito");
         } catch ( error) {
             console.error("Error completando el pedido:", error);
         }
@@ -146,6 +162,8 @@ const DetalleOrden = () => {
                     <h3>Fecha de Necesidad: <input ref={needbyRef} id='needby' type="date" /></h3>
                     {/* <h3>Cliente: <input ref={clienteRef} id='cliente' type="text" /></h3> */}
                     <h3>PO: <input ref={poRef} id='po' type="text" /></h3>
+                  
+                    <h3>Comentarios: <br /><textarea ref={comentariosRef} id='comentarios' /></h3>
            
             </div>
             

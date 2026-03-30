@@ -29,6 +29,7 @@ export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+  const carritoRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   const [carrito, setCarrito] = useState([]);
@@ -70,6 +71,12 @@ export default function LandingPage() {
       ) {
         setMenuOpen(false);
       }
+      if (
+        carritoRef.current &&
+        !carritoRef.current.contains(event.target)
+      ) {
+        setIsCarritoOpen(false);
+      }
     }
 
     document.addEventListener("click", handleClickOutside);
@@ -91,6 +98,7 @@ export default function LandingPage() {
 
   const irOrden = () => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
+    setIsCarritoOpen(false);
     navigate('/home/detalle-orden');
   };
 
@@ -138,7 +146,10 @@ export default function LandingPage() {
           className="logo-Nav"
         />
         <div className="right-section">
-          <button onClick={() => setIsCarritoOpen(!isCarritoOpen)} className="cart-button">
+          <button onClick={(e) => {
+            e.stopPropagation();
+            setIsCarritoOpen(!isCarritoOpen);
+          }} className="cart-button">
             <i className="pi pi-shopping-cart" aria-hidden="true" />
             <span className="cart-count">{carrito.length}</span>
           </button>
@@ -154,7 +165,7 @@ export default function LandingPage() {
 
       {/* CARRITO DROPDOWN */}
       {isCarritoOpen && (
-        <div className="carrito-dropdown">
+        <div ref={carritoRef} className="carrito-dropdown">
           <h2>Carrito</h2>
           <table>
             <thead>

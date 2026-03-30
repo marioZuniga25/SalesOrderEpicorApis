@@ -5,6 +5,9 @@ import axios from 'axios';
 const EstadoPedido = () => {
 
     const [Pedidos, setPedidos] = useState([]);
+    const [allPedidos, setAllPedidos] = useState([]);
+    const [searchText, setSearchText] = useState('');
+    const [searchDate, setSearchDate] = useState('');
     const [selectedPedido, setSelectedPedido] = useState(null);
     const [detallePedido, setDetallePedido] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -28,6 +31,7 @@ const EstadoPedido = () => {
     const buscarPedidos = async () => {
         try {
             const res = await axios.get(baseURLPedidos, config);
+            setAllPedidos(res.data.value);
             setPedidos(res.data.value);
             setCurrentPage(1);
             console.log("Pedidos encontrados:", res.data.value);
@@ -61,25 +65,72 @@ const EstadoPedido = () => {
     const currentPedidos = Pedidos.slice(startIndex, endIndex);
 
 
+    const formatPedidoDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) return '';
+        return date.toISOString().split('T')[0];
+    }
+
+    const applyFilters = (text, date) => {
+        const normalizedText = (text || '').trim().toLowerCase();
+        const normalizedDate = date || '';
+
+        let filtered = allPedidos;
+
+        if (normalizedText) {
+            filtered = filtered.filter(pedido =>
+                (pedido.UD04_Key3 || '').toLowerCase().includes(normalizedText)
+            );
+        }
+
+        if (normalizedDate) {
+            filtered = filtered.filter(pedido =>
+                formatPedidoDate(pedido.UD04_Date01) === normalizedDate
+            );
+        }
+
+        setPedidos(filtered);
+        setCurrentPage(1);
+    }
+
+    const handleSearchText = (query) => {
+        setSearchText(query);
+        applyFilters(query, searchDate);
+    }
+
+    const handleSearchDate = (date) => {
+        setSearchDate(date);
+        applyFilters(searchText, date);
+    }
 
     return (
         <>
             <h1 style={{ justifySelf: 'center', margin: '10px' }}>EstadoPedido</h1>
             <div className='table-container'>
+                <div className="filtros">
+                    <h3>Buscar Orden Compra: <input type="text" value={searchText} onChange={(e) => handleSearchText(e.target.value)} /></h3>
+                    <h3>Fecha: <input type="date" value={searchDate} onChange={(e) => handleSearchDate(e.target.value)} /></h3>
+                    <button onClick={() => { setSearchText(''); setSearchDate(''); applyFilters('', ''); }}>Limpiar filtros</button>
+                </div>
                 <table className='pedido-table'>
                     <thead>
                         <tr className='encabezado-partes'>
-                            <th>Pedido</th>
+                            {/* <th>Pedido</th> */}
                             <th>Orden de Compra</th>
+                            <th>Orden de Venta</th>
                             <th>Estado</th>
+                            <th>Fecha de Necesidad</th>
                         </tr>
                     </thead>
                     <tbody>
                         {currentPedidos.map((pedido, index) => (
                             <tr key={index} onClick={() => detallesPedido(pedido)} style={{ cursor: 'pointer' }}>
-                                <td>{pedido.UD04_Key1}</td>
+                                {/* <td>{pedido.UD04_Key1}</td> */}
                                 <td>{pedido.UD04_Key3}</td>
+                                <td>{pedido.UD04_Character02}</td>
                                 <td>{pedido.UD04_Key4}</td>
+                                <td>{pedido.UD04_Date01 ? new Date(pedido.UD04_Date01).toLocaleDateString() : 'S/F'}</td>
                             </tr>
                         ))}
                     </tbody>
