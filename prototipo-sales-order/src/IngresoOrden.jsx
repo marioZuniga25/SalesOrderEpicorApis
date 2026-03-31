@@ -6,6 +6,7 @@ import axios from "axios"
 const IngresoOrden = ({ onGoToOrder }) => {
   const [carrito,setCarrito] = useState([]);
   const [parts, setParts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isCarritoOpen, setIsCarritoOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -47,6 +48,7 @@ const IngresoOrden = ({ onGoToOrder }) => {
     const baseURLParts = "https://centralusdtedu00.epicorsaas.com/SaaS951/api/v2/odata/19009E6/Erp.BO.PartSvc"
     
     const buscarPartes = async (Partnum = '') => {
+        setLoading(true);
         try {
             let url = `${baseURLParts}/Parts`;
             if (Partnum) {
@@ -58,6 +60,8 @@ const IngresoOrden = ({ onGoToOrder }) => {
             console.log("Partes encontradas:", res.data.value);
         } catch (error) {
             console.error("Error buscando partes:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -80,33 +84,39 @@ const IngresoOrden = ({ onGoToOrder }) => {
         </form> */}
         <h3 className='search-bar'>Buscar Parte: <input type="text" onChange={(e) => buscarPartes(e.target.value)}/></h3>
         <div className='Pedido-container' >
-          <table className='part-table'>
-            <thead>
-              <tr className='encabezado-partes'>
-                <th>Part ID</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody >
-              {currentParts.map(part => (
-                <tr key={part.PartNum}>
-                  <td>{part.PartNum}</td>
-                  <td>{part.PartDescription}</td>
-                  <td>{part.UnitPrice}</td>
-                  <td><button onClick={() => {
-                    const newCarrito = [...carrito, part];
-                    setCarrito(newCarrito);
-                    localStorage.setItem("carrito", JSON.stringify(newCarrito));
-                    window.dispatchEvent(new Event('carritoUpdated'));
-                  }}
-                  className='btn-Agregar'
-                  >Agregar</button></td>
+          {loading ? (
+            <div className="spinner-container">
+              <div className="spinner"></div>
+            </div>
+          ) : (
+            <table className='part-table'>
+              <thead>
+                <tr className='encabezado-partes'>
+                  <th>Part ID</th>
+                  <th>Description</th>
+                  <th>Price</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody >
+                {currentParts.map(part => (
+                  <tr key={part.PartNum}>
+                    <td>{part.PartNum}</td>
+                    <td>{part.PartDescription}</td>
+                    <td>{part.UnitPrice}</td>
+                    <td><button onClick={() => {
+                      const newCarrito = [...carrito, part];
+                      setCarrito(newCarrito);
+                      localStorage.setItem("carrito", JSON.stringify(newCarrito));
+                      window.dispatchEvent(new Event('carritoUpdated'));
+                    }}
+                    className='btn-Agregar'
+                    >Agregar</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
         
         {totalPages > 1 && (

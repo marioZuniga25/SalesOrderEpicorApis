@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./Landing.css";
 import axios from "axios";
+import withReactContent from "sweetalert2-react-content";
+import Swal from 'sweetalert2'
 
 export function LandingHome() {
   return (
@@ -35,6 +37,40 @@ export default function LandingPage() {
   const [carrito, setCarrito] = useState([]);
   const [isCarritoOpen, setIsCarritoOpen] = useState(false);
   const user = localStorage.getItem("username");
+const MySwal = withReactContent(Swal)
+
+  const showAlertlogout = async () => {
+    const result = await MySwal.fire({
+      title: '¿Está seguro de cerrar la sesión?',
+      text: '',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Cerrar sesión',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ee191f',
+      cancelButtonColor: '#6c757d'
+    });
+
+    if (result.isConfirmed) {
+      logout();
+      MySwal.fire({
+        title: <h1>Sesión cerrada.</h1>,
+        text: '',
+        icon: 'success'
+      });
+
+    }
+  };
+
+  const confirmLogout = () => {
+    showAlertlogout();
+  }
+
+  const logout = () => {
+    localStorage.removeItem("auth");
+    localStorage.removeItem("username");
+    navigate("/");
+  };
 
   const custdetailURL = `https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/Erp.BO.CustomerSvc/GetByID?custNum=${user}`;
   useEffect(() => {
@@ -115,11 +151,7 @@ export default function LandingPage() {
 
 
 
-  const logout = () => {
-    localStorage.removeItem("auth");
-    localStorage.removeItem("username");
-    navigate("/");
-  };
+  
 
   return (
     <div className="container">
@@ -159,7 +191,7 @@ export default function LandingPage() {
             <span>{cusname}</span>
           </div>
 
-          <i className="pi pi-sign-out logout-icon" onClick={logout}></i>
+          <i className="pi pi-sign-out logout-icon" onClick={confirmLogout}></i>
         </div>
       </header>
 

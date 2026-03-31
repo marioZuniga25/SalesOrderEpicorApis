@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import axios from "axios"
+import './Productos.css';
  
 const Productos = () => {
  const [parts, setParts] = useState([]);
+ const [loading, setLoading] = useState(true);
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,6 +23,7 @@ const Productos = () => {
 const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/Existencias/Data"
     
     const buscarPartes = async (Partnum = '') => {
+        setLoading(true);
         try {
             let url = `${baseURLParts}`;
             if (Partnum) {
@@ -33,6 +36,8 @@ const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/oda
             setEndIndex(10);
         } catch (error) {
             console.error("Error buscando partes:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -61,7 +66,13 @@ const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/oda
         onChange={handleSearchChange}
         style={{ marginBottom: '20px', padding: '5px', width: '200px' }}
       />
-      <table className='part-table'>
+      {loading ? (
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+      ) : (
+        <>
+          <table className='part-table'>
             <thead>
               <tr className='encabezado-partes'>
                 <th>Part ID</th>
@@ -104,6 +115,8 @@ const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/oda
             </button>
           </div>
         )}
+        </>
+      )}
     </div>
   );
 }
