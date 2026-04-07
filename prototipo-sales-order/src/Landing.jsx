@@ -85,6 +85,7 @@ const MySwal = withReactContent(Swal)
       .then(res => {
         const custName = res.data.returnObj.Customer[0].Name;
         localStorage.setItem("customerName", custName);
+        localStorage.setItem("customerEmail", res.data.returnObj.Customer[0].EmailAddress);
       })
       .catch(err => console.error("Error fetching customer details:", err));
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './EstadoPedido.css';
 import axios from 'axios';
+import emailjs from '@emailjs/browser';
 
 const EstadoPedido = () => {
 
@@ -114,6 +115,8 @@ const EstadoPedido = () => {
         setItemsPerPageDetalle(newItemsPerPage);
         setCurrentPageDetalle(1);
     };
+
+
 
     return (
         <>
