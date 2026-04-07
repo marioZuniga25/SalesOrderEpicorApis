@@ -86,7 +86,7 @@ const DetalleOrden = () => {
                                 Key3: po.toString(),
                                 Key4: "",
                                 Date01: needbyDate.toString(),
-                                Character02: comentarios.toString(),
+                                Character03: comentarios.toString(),
                                 Character01: "Pendiente Revision",
                                 RowMod: "A"
                             }

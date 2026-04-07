@@ -67,9 +67,7 @@ const EstadoPedido = () => {
 
     const formatPedidoDate = (dateString) => {
         if (!dateString) return '';
-        const date = new Date(dateString);
-        if (Number.isNaN(date.getTime())) return '';
-        return date.toISOString().split('T')[0];
+        return dateString.split('T')[0]; // Extrae la fecha sin zona horaria
     }
 
     const applyFilters = (text, date) => {
@@ -129,8 +127,8 @@ const EstadoPedido = () => {
                                 {/* <td>{pedido.UD04_Key1}</td> */}
                                 <td>{pedido.UD04_Key3}</td>
                                 <td>{pedido.UD04_Character02}</td>
-                                <td>{pedido.UD04_Key4}</td>
-                                <td>{pedido.UD04_Date01 ? new Date(pedido.UD04_Date01).toLocaleDateString() : 'S/F'}</td>
+                                <td>{pedido.UD04_Character01}</td>
+                                <td>{pedido.UD04_Date01 ? formatPedidoDate(pedido.UD04_Date01) : 'S/F'}</td>
                             </tr>
                         ))}
                     </tbody>
