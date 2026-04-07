@@ -74,6 +74,17 @@ const DetalleOrden = () => {
         console.log("PO: ", po);
         console.log("Fecha de Necesidad: ", needbyDate);
         console.log("Comentarios: ", comentarios);
+
+        if (!cliente || !po || !needbyDate) {
+            MySwal.fire({
+                title: <p>Faltan campos obligatorios❌</p>,
+                text: 'Por favor, complete los campos de Cliente, PO y Fecha de Necesidad antes de completar el pedido.',
+                icon: 'error'
+            });
+            console.log("Error: Faltan campos obligatorios");
+            return;
+        }
+
         try {
             const resHead = await axios.post(
                 `${baseURLUD4}/UpdateExt`,
@@ -147,6 +158,8 @@ const DetalleOrden = () => {
                 //alert("Pedido completado con éxito. Número de pedido: " + numPedido);
                 showAlert();
                 localStorage.removeItem("carrito");
+                setCarrito([]);
+                window.dispatchEvent(new Event('carritoUpdated'));
         } catch ( error) {
             console.error("Error completando el pedido:", error);
         }
@@ -182,8 +195,8 @@ const DetalleOrden = () => {
                         <tr key={index}>
                             <td>{item.PartNum}</td>
                             <td>{item.PartDescription}</td>
-                            <td><input ref={el => cantidadRefs.current[index] = el} name='cant' type="number" min="1" defaultValue={1} style={{"width": "40%"}}/></td>
-                            <td>{item.UnitPrice}</td>
+                            <td><input ref={el => cantidadRefs.current[index] = el} name='cant' type="number" min="1" defaultValue={1} style={{"width": "100%", "textAlign": "center"}}/></td>
+                            <td style={{"textAlign": "center"}}>{item.UnitPrice}</td>
                             <td><button onClick={() => eliminarProducto(index)} className='btn-Eliminar'>Eliminar</button></td>
                         </tr>
                     ))}

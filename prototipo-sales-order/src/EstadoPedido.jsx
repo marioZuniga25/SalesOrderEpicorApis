@@ -12,7 +12,9 @@ const EstadoPedido = () => {
     const [detallePedido, setDetallePedido] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [showConfirm, setShowConfirm] = useState(false);
-    const itemsPerPage = 10;
+    const [currentPageDetalle, setCurrentPageDetalle] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [itemsPerPageDetalle, setItemsPerPageDetalle] = useState(10);
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -48,6 +50,7 @@ const EstadoPedido = () => {
             .then(res => {
                 console.log("Detalles del pedido:", res.data.value);
                 setDetallePedido(res.data.value);
+                setCurrentPageDetalle(1);
             })
             .catch(error => {
                 console.error("Error obteniendo detalles del pedido:", error);
@@ -63,6 +66,11 @@ const EstadoPedido = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentPedidos = Pedidos.slice(startIndex, endIndex);
+
+    const totalPagesDetalle = detallePedido ? Math.ceil(detallePedido.length / itemsPerPageDetalle) : 0;
+    const startIndexDetalle = (currentPageDetalle - 1) * itemsPerPageDetalle;
+    const endIndexDetalle = startIndexDetalle + itemsPerPageDetalle;
+    const currentDetalleItems = detallePedido ? detallePedido.slice(startIndexDetalle, endIndexDetalle) : [];
 
 
     const formatPedidoDate = (dateString) => {
@@ -97,10 +105,15 @@ const EstadoPedido = () => {
         applyFilters(query, searchDate);
     }
 
-    const handleSearchDate = (date) => {
-        setSearchDate(date);
-        applyFilters(searchText, date);
-    }
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1);
+    };
+
+    const handleItemsPerPageDetalleChange = (newItemsPerPage) => {
+        setItemsPerPageDetalle(newItemsPerPage);
+        setCurrentPageDetalle(1);
+    };
 
     return (
         <>
@@ -110,6 +123,14 @@ const EstadoPedido = () => {
                     <h3>Buscar Orden Compra: <input type="text" value={searchText} onChange={(e) => handleSearchText(e.target.value)} /></h3>
                     <h3>Fecha: <input type="date" value={searchDate} onChange={(e) => handleSearchDate(e.target.value)} /></h3>
                     <button onClick={() => { setSearchText(''); setSearchDate(''); applyFilters('', ''); }}>Limpiar filtros</button>
+                    <label style={{ marginLeft: '20px' }}>Registros por página:
+                        <select value={itemsPerPage} onChange={(e) => handleItemsPerPageChange(parseInt(e.target.value))} style={{ marginLeft: '5px' }}>
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </label>
                 </div>
                 <table className='pedido-table'>
                     <thead>
@@ -126,7 +147,7 @@ const EstadoPedido = () => {
                             <tr key={index} onClick={() => detallesPedido(pedido)} style={{ cursor: 'pointer' }}>
                                 {/* <td>{pedido.UD04_Key1}</td> */}
                                 <td>{pedido.UD04_Key3}</td>
-                                <td>{pedido.UD04_Character02}</td>
+                                <td>{pedido.UD04_Character02 == '' || pedido.UD04_Character02 == null || pedido.UD04_Character02 == 'undefined' ? 'Orden de Venta no disponible' : pedido.UD04_Character02}</td>
                                 <td>{pedido.UD04_Character01}</td>
                                 <td>{pedido.UD04_Date01 ? formatPedidoDate(pedido.UD04_Date01) : 'S/F'}</td>
                             </tr>
@@ -162,20 +183,30 @@ const EstadoPedido = () => {
                         <i className="pi pi-times" id='close-icon' onClick={() => setSelectedPedido(null)}></i>
                         <h2>Detalles del Pedido</h2>
                         <br />
-                        <p><strong>Pedido:</strong> {selectedPedido.UD04_Key1}</p>
+                        <p><strong>OV:</strong> {selectedPedido.UD04_Character02 == '' || selectedPedido.UD04_Character02 == null || selectedPedido.UD04_Character02 == 'undefined' ? 'Orden de Venta no disponible' : selectedPedido.UD04_Character02}</p>
                         <p><strong>Orden de Compra:</strong> {selectedPedido.UD04_Key3}</p>
-                        <p><strong>Estado:</strong> {selectedPedido.UD04_Key4}</p>
+                        <p><strong>Estado:</strong> {selectedPedido.UD04_Character01}</p>
                         <h3>Partes del Pedido:</h3>
+                        <div style={{ marginBottom: '10px' }}>
+                            <label>Registros por página:
+                                <select value={itemsPerPageDetalle} onChange={(e) => handleItemsPerPageDetalleChange(parseInt(e.target.value))} style={{ marginLeft: '5px' }}>
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={25}>25</option>
+                                    <option value={50}>50</option>
+                                </select>
+                            </label>
+                        </div>
                         <table className='detail-table'>
                             <thead>
                                 <tr className='encabezado-partes'>
-                                    <th>Part ID</th>
-                                    <th>Description</th>
+                                    <th>Linea</th>
+                                    <th>Parte</th>
                                     <th>Cantidad</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {detallePedido && detallePedido.map((item, index) => (
+                                {currentDetalleItems.map((item, index) => (
                                     <tr key={index}>
                                         <td>{item.UD03_Key2}</td>
                                         <td>{item.UD03_Key3}</td>
@@ -184,9 +215,28 @@ const EstadoPedido = () => {
                                 ))}
                             </tbody>
                         </table>
-                        <button className='btn-cancel' onClick={cancelModal}>
+                        {totalPagesDetalle > 1 && (
+                            <div className="pagination" style={{ marginTop: '20px', textAlign: 'center' }}>
+                                <button
+                                    onClick={() => setCurrentPageDetalle(prev => Math.max(prev - 1, 1))}
+                                    disabled={currentPageDetalle === 1}
+                                    style={{ marginRight: '10px', padding: '5px 10px' }}
+                                >
+                                    Anterior
+                                </button>
+                                <span>Página {currentPageDetalle} de {totalPagesDetalle}</span>
+                                <button
+                                    onClick={() => setCurrentPageDetalle(prev => Math.min(prev + 1, totalPagesDetalle))}
+                                    disabled={currentPageDetalle === totalPagesDetalle}
+                                    style={{ marginLeft: '10px', padding: '5px 10px' }}
+                                >
+                                    Siguiente
+                                </button>
+                            </div>
+                        )}
+                        {/* <button className='btn-cancel' onClick={cancelModal}>
                             Cancelar Pedido
-                        </button>
+                        </button> */}
                     </div>
                 )}
                 {showConfirm && (
