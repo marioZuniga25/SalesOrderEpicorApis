@@ -184,6 +184,7 @@ const MySwal = withReactContent(Swal)
           className="logo-Nav"
         />
         <div className="right-section">
+          <button className="cart-button"><i className="pi pi-book"></i></button>
           <button onClick={(e) => {
             e.stopPropagation();
             setIsCarritoOpen(!isCarritoOpen);
