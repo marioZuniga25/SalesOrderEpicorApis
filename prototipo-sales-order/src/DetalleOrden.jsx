@@ -65,7 +65,7 @@ const DetalleOrden = () => {
         }
     };
 
-    /*const completarPedido = async () => {
+    const completarPedido = async () => {
         var numPedido = await getNewNumPedido();
         var cliente = localStorage.getItem("username") || "ClienteDesconocido";
         var po = poRef.current ? poRef.current.value : "";
@@ -170,8 +170,8 @@ const DetalleOrden = () => {
 
 
     }
-*/
-    const completarPedido = async () => {
+
+ /*   const completarPedido = async () => {
         console.log("Iniciando completarPedido");
 
         const numPedido = await getNewNumPedido();
@@ -275,7 +275,7 @@ const DetalleOrden = () => {
             });
         }
     };
-
+*/
 
     const enviarConfirmacion = (po, total, lineas) => {
         const userEmail = localStorage.getItem("customerEmail");

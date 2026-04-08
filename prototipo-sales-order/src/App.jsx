@@ -7,6 +7,7 @@ import DetalleOrden from "./DetalleOrden";
 import IngresoOrden from "./IngresoOrden";
 import EstadoPedido from "./EstadoPedido";
 import PrivateRoute from "./PrivateRoute";
+import { NewUser } from "./NewUser";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="estadoPedidos" element={<EstadoPedido />} />
           <Route path="ingreso-orden" element={<IngresoOrden />} />
           <Route path="detalle-orden" element={<DetalleOrden />} />
+          <Route path="newuser" element={<NewUser />} />
         </Route>
 
       </Routes>

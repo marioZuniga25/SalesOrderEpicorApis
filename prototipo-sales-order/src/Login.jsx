@@ -3,6 +3,8 @@ import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import withReactContent from "sweetalert2-react-content";
 import Swal from 'sweetalert2'
+import bcrypt from 'bcryptjs';
+import axios from 'axios';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,6 +13,8 @@ export default function Login() {
     password: ""
   };
   const MySwal = withReactContent(Swal)
+  const baseUrlLogin = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/Ice.BO.UD05Svc";
+
 
   const showAlert = () => {
     MySwal.fire({
@@ -20,19 +24,57 @@ export default function Login() {
     })
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const usernameInput = document.getElementById("user");
     const passwordInput = document.getElementById("pwd");
     credenciales.username = usernameInput.value;
     credenciales.password = passwordInput.value;
-    if (credenciales.username === "2" && credenciales.password === "admin123") {
-      //alert("Inicio de sesión exitoso");
-      showAlert();
-      localStorage.setItem("auth", "true");
-      localStorage.setItem("username", credenciales.username);
-      navigate("/home");
-    } else {
-      alert("Credenciales incorrectas. Por favor, inténtalo de nuevo.");
+
+    try {
+      const url = `${baseUrlLogin}/GetByID?key1=${credenciales.username}&key2=&key3=&key4=&key5=`;
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Basic MTkwMDktZXBpY29yOlRyYWluMTgh",
+        "X-API-Key": "g9Hps4BsmlZ8XsfIopSvvan6baJCdC7z35ZbwVx0PDHDN"
+      };
+      console.log("URL petición Login:", url);
+      console.log("Datos enviados:", credenciales);
+      console.log("Headers:", headers);
+      const res = await axios.get(url, { headers });
+
+      const userData = res.data.returnObj.UD05[0];
+      if (userData) {
+        const storedHash = userData.Character01;
+        console.log("Hash almacenado:", storedHash);
+        bcrypt.compare(credenciales.password, storedHash, (err, isMatch) => {
+          if (err) {
+            console.error("Error comparing passwords:", err);
+            MySwal.fire({
+              title: <h1>Error al iniciar sesión.</h1>,
+              text: 'Ocurrió un error al verificar las credenciales.',
+              icon: 'error'
+            });
+          } else if (isMatch) {
+            showAlert();
+            localStorage.setItem("auth", "true");
+            localStorage.setItem("username", credenciales.username);
+            navigate("/home");
+          } else {
+            MySwal.fire({
+              title: <h1>Credenciales incorrectas.</h1>,
+              text: 'El usuario o la contraseña son incorrectos. Por favor, inténtalo de nuevo.',
+              icon: 'error'
+            });
+          }
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching user data:", err);
+      MySwal.fire({
+        title: <h1>Error al iniciar sesión.</h1>,
+        text: 'Ocurrió un error al verificar las credenciales.',
+        icon: 'error'
+      });
     }
   }
 

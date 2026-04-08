@@ -36,6 +36,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [carrito, setCarrito] = useState([]);
   const [isCarritoOpen, setIsCarritoOpen] = useState(false);
+  const [cusname, setCusname] = useState(localStorage.getItem("customerName") || "");
   const user = localStorage.getItem("username");
 const MySwal = withReactContent(Swal)
 
@@ -69,25 +70,30 @@ const MySwal = withReactContent(Swal)
   const logout = () => {
     localStorage.removeItem("auth");
     localStorage.removeItem("username");
+    localStorage.removeItem("customerName");
+    localStorage.removeItem("customerEmail");
+    setCusname("");
     navigate("/");
   };
 
   const custdetailURL = `https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/Erp.BO.CustomerSvc/GetByID?custNum=${user}`;
   useEffect(() => {
-
-    axios.get(custdetailURL, {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Basic MTkwMDktZXBpY29yOlRyYWluMTgh",
-        "X-API-Key": "g9Hps4BsmlZ8XsfIopSvvan6baJCdC7z35ZbwVx0PDHDN"
-      }
-    })
-      .then(res => {
-        const custName = res.data.returnObj.Customer[0].Name;
-        localStorage.setItem("customerName", custName);
-        localStorage.setItem("customerEmail", res.data.returnObj.Customer[0].EmailAddress);
+    if (user) {
+      axios.get(custdetailURL, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Basic MTkwMDktZXBpY29yOlRyYWluMTgh",
+          "X-API-Key": "g9Hps4BsmlZ8XsfIopSvvan6baJCdC7z35ZbwVx0PDHDN"
+        }
       })
-      .catch(err => console.error("Error fetching customer details:", err));
+        .then(res => {
+          const custName = res.data.returnObj.Customer[0].Name;
+          localStorage.setItem("customerName", custName);
+          localStorage.setItem("customerEmail", res.data.returnObj.Customer[0].EmailAddress);
+          setCusname(custName);
+        })
+        .catch(err => console.error("Error fetching customer details:", err));
+    }
 
     const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
     setCarrito(storedCarrito);
@@ -122,8 +128,7 @@ const MySwal = withReactContent(Swal)
       window.removeEventListener('carritoUpdated', handleCarritoUpdate);
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
-  const cusname = localStorage.getItem("customerName");
+  }, [user]);
   const closeMenu = () => setMenuOpen(false);
 
   const removeFromCarrito = (index) => {
