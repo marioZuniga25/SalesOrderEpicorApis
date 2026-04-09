@@ -9,6 +9,7 @@ const IngresoOrden = ({ onGoToOrder }) => {
   const [loading, setLoading] = useState(true);
   const [isCarritoOpen, setIsCarritoOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
@@ -47,6 +48,15 @@ const IngresoOrden = ({ onGoToOrder }) => {
     
     const baseURLParts = "https://centralusdtedu00.epicorsaas.com/SaaS951/api/v2/odata/19009E6/Erp.BO.PartSvc"
     
+    const handleSearchChange = (value) => {
+        setSearchTerm(value);
+        if (value.length >= 3) {
+            buscarPartes(value);
+        } else if (value.length === 0) {
+            buscarPartes('');
+        }
+    }
+    
     const buscarPartes = async (Partnum = '') => {
         setLoading(true);
         try {
@@ -82,7 +92,7 @@ const IngresoOrden = ({ onGoToOrder }) => {
           <h3>OC:<input type="text" /></h3>
           <h3>Fecha Necesidad: <input type="date" /> </h3>
         </form> */}
-        <h3 className='search-bar'>Buscar Parte: <input type="text" onChange={(e) => buscarPartes(e.target.value)}/></h3>
+        <h3 className='search-bar'>Buscar Parte: <input type="text" value={searchTerm} onChange={(e) => handleSearchChange(e.target.value)} placeholder='(mínimo 3 caracteres)'/></h3>
         <div className='Pedido-container' >
           {loading ? (
             <div className="spinner-container">
@@ -92,9 +102,9 @@ const IngresoOrden = ({ onGoToOrder }) => {
             <table className='part-table'>
               <thead>
                 <tr className='encabezado-partes'>
-                  <th>Part ID</th>
-                  <th>Description</th>
-                  <th>Price</th>
+                  <th>Parte</th>
+                  <th>Descripción</th>
+                  <th>Precio U.</th>
                   <th></th>
                 </tr>
               </thead>

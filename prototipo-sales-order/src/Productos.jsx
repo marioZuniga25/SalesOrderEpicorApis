@@ -4,14 +4,15 @@ import './Productos.css';
  
 const Productos = () => {
  const [parts, setParts] = useState([]);
+ const [filteredParts, setFilteredParts] = useState([]);
  const [loading, setLoading] = useState(true);
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const itemsPerPage = 10;
-  const currentParts = parts.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(parts.length / itemsPerPage);
+  const currentParts = filteredParts.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredParts.length / itemsPerPage);
 
   const config = {
     headers: {
@@ -31,6 +32,7 @@ const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/oda
             }
             const res = await axios.get(url, config);
             setParts(res.data.value);
+            setFilteredParts(res.data.value); // Inicialmente mostrar todos
             setCurrentPage(1); 
             setStartIndex(0);
             setEndIndex(10);
@@ -53,7 +55,22 @@ const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/oda
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
-        buscarPartes(value);
+        
+        if (value.length >= 3) {
+            // Filtrar localmente por PartNum
+            const filtered = parts.filter(part => 
+                part.PartBin_PartNum.toLowerCase().includes(value.toLowerCase())
+            );
+            setFilteredParts(filtered);
+        } else {
+            // Si menos de 3 caracteres, mostrar todos
+            setFilteredParts(parts);
+        }
+        
+        // Resetear paginación
+        setCurrentPage(1);
+        setStartIndex(0);
+        setEndIndex(10);
     }
 
   return (
@@ -61,7 +78,7 @@ const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/oda
       <h1>Productos</h1>
       <input
         type="text"
-        placeholder="Buscar por PartNum"
+        placeholder="Buscar por Numero de Parte (mínimo 3 caracteres)"
         value={searchTerm}
         onChange={handleSearchChange}
         style={{ marginBottom: '20px', padding: '5px', width: '200px' }}
@@ -75,8 +92,8 @@ const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/oda
           <table className='part-table'>
             <thead>
               <tr className='encabezado-partes'>
-                <th>Part ID</th>
-                <th>Description</th>
+                <th>Parte</th>
+                <th>Descripción</th>
                 <th>Existencias</th>
               </tr>
             </thead>
@@ -85,7 +102,7 @@ const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/oda
                 <tr key={part.PartBin_PartNum + index}>
                   <td>{part.PartBin_PartNum}</td>
                   <td>{part.Part_PartDescription}</td>
-                  <td>{part.PartBin_OnhandQty}</td>
+                  <td>{Number(part.PartBin_OnhandQty).toLocaleString('es-MX')}</td>
                   {/* <td><button onClick={() => {
                     const newCarrito = [...carrito, part];
                     setCarrito(newCarrito);

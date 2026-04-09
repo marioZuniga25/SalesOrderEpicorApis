@@ -119,7 +119,7 @@ const DetalleOrden = () => {
             carrito.forEach((parte, index) => {
 
                 const cantidadInput = cantidadRefs.current[index];
-                const cantidad = cantidadInput ? parseInt(cantidadInput.value) : 1;
+                const cantidad = cantidadInput ? parseInt(cantidadInput.value.replace(/[^0-9]/g, '')) : 1;
 
 
                 const parteConCantidad = { ...parte, Cantidad: cantidad };
@@ -171,112 +171,6 @@ const DetalleOrden = () => {
 
     }
 
- /*   const completarPedido = async () => {
-        console.log("Iniciando completarPedido");
-
-        const numPedido = await getNewNumPedido();
-
-        if (!numPedido) {
-            console.log("No se pudo generar número de pedido");
-            return;
-        }
-
-        const cliente = localStorage.getItem("username") || "ClienteDesconocido";
-        const po = poRef.current?.value || "";
-        const needbyDate = needbyRef.current?.value || "";
-        const comentarios = comentariosRef.current?.value || "";
-
-        if (!cliente || !po || !needbyDate) {
-            MySwal.fire({
-                title: 'Faltan campos',
-                text: 'Completa Cliente, PO y Fecha',
-                icon: 'error'
-            });
-            return;
-        }
-
-        try {
-            // 🔹 GUARDAR ENCABEZADO
-            await axios.post(`${baseURLUD4}/UpdateExt`, {
-                ds: {
-                    UD04: [{
-                        Key1: numPedido.toString(),
-                        Key2: cliente,
-                        Key3: po,
-                        Date01: needbyDate,
-                        Character03: comentarios,
-                        Character01: "Pendiente Revision",
-                        RowMod: "A"
-                    }]
-                }
-            }, config);
-
-            console.log("Encabezado guardado");
-
-            // 🔹 GUARDAR DETALLE
-            for (let index = 0; index < carrito.length; index++) {
-                const item = carrito[index];
-
-                const cantidad = cantidadRefs.current[index]
-                    ? parseInt(cantidadRefs.current[index].value)
-                    : 1;
-
-                await axios.post(`${baseURLUD}/UpdateExt`, {
-                    ds: {
-                        UD03: [{
-                            Key1: numPedido,
-                            Key2: (index + 1).toString(),
-                            Key3: item.PartNum,
-                            Key4: item.PartDescription,
-                            Number01: cantidad,
-                            Number02: item.UnitPrice,
-                            RowMod: "A"
-                        }]
-                    }
-                }, config);
-
-                console.log(`Línea ${index + 1} guardada`);
-            }
-
-            // 🔹 CALCULAR TOTAL
-            const total = carrito.reduce((acc, item, index) => {
-                const cantidad = cantidadRefs.current[index]
-                    ? parseInt(cantidadRefs.current[index].value)
-                    : 1;
-                return acc + (item.UnitPrice * cantidad);
-            }, 0);
-
-            console.log("Total:", total);
-
-            // 🔹 ENVIAR CORREO
-            await enviarConfirmacion(
-                numPedido,
-                total,
-                carrito.map(i => i.PartNum)
-            );
-
-            // 🔹 LIMPIAR
-            localStorage.removeItem("carrito");
-            setCarrito([]);
-
-            MySwal.fire({
-                title: 'Pedido completado',
-                text: 'Revisa el estado en pedidos',
-                icon: 'success'
-            });
-
-        } catch (error) {
-            console.error("Error general:", error.response || error);
-
-            MySwal.fire({
-                title: 'Error al completar',
-                text: 'No se pudo completar el pedido',
-                icon: 'error'
-            });
-        }
-    };
-*/
-
     const enviarConfirmacion = (po, total, lineas) => {
         const userEmail = localStorage.getItem("customerEmail");
         const userName = localStorage.getItem("customerName");
@@ -307,19 +201,22 @@ const DetalleOrden = () => {
             <div className="orderhed">
                 <h3>Fecha de Necesidad: <input ref={needbyRef} id='needby' type="date" /></h3>
                 {/* <h3>Cliente: <input ref={clienteRef} id='cliente' type="text" /></h3> */}
-                <h3>PO: <input ref={poRef} id='po' type="text" /></h3>
+                <h3>OC: <input ref={poRef} id='po' type="text" /></h3>
 
-                <h3>Comentarios: <br /><textarea ref={comentariosRef} id='comentarios' /></h3>
+                <h3>Comentarios: <br />
+                    <textarea ref={comentariosRef} id='comentarios' maxLength={255} /><br />
+                    <span style={{fontSize: '0.85rem', color: '#666'}}>Máximo 255 caracteres</span>
+                </h3>
 
             </div>
 
             <table className='part-table'>
                 <thead>
                     <tr className='encabezado-partes'>
-                        <th>Part ID</th>
-                        <th>Description</th>
+                        <th>Parte</th>
+                        <th>Descripción</th>
                         <th>Cantidad</th>
-                        <th>Price</th>
+                        <th>Precio U.</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -328,8 +225,14 @@ const DetalleOrden = () => {
                         <tr key={index}>
                             <td>{item.PartNum}</td>
                             <td>{item.PartDescription}</td>
-                            <td><input ref={el => cantidadRefs.current[index] = el} name='cant' type="number" min="1" defaultValue={1} style={{ "width": "100%", "textAlign": "center" }} /></td>
-                            <td style={{ "textAlign": "center" }}>{item.UnitPrice}</td>
+                            <td><input ref={el => cantidadRefs.current[index] = el} name='cant' type="text" inputMode="numeric" defaultValue="1" onChange={(e) => {
+                                const value = e.target.value.replace(/[^0-9]/g, '');
+                                e.target.value = value ? Number(value).toLocaleString('es-MX') : '';
+                            }} onBlur={(e) => {
+                                const value = e.target.value.replace(/[^0-9]/g, '');
+                                e.target.value = value ? Number(value).toLocaleString('es-MX') : '1';
+                            }} style={{ "width": "100%", "textAlign": "center" }} /></td>
+                            <td style={{ "textAlign": "center" }}>{Number(item.UnitPrice).toLocaleString('es-MX')}</td>
                             <td><button onClick={() => eliminarProducto(index)} className='btn-Eliminar'>Eliminar</button></td>
                         </tr>
                     ))}

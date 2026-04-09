@@ -213,7 +213,7 @@ const EstadoPedido = () => {
                                     <tr key={index}>
                                         <td>{item.UD03_Key2}</td>
                                         <td>{item.UD03_Key3}</td>
-                                        <td>{item.UD03_Number01}</td>
+                                        <td>{Number(item.UD03_Number01).toLocaleString('es-MX')}</td>
                                     </tr>
                                 ))}
                             </tbody>
