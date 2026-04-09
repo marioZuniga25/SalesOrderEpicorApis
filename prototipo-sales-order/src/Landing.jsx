@@ -144,6 +144,10 @@ const MySwal = withReactContent(Swal)
     navigate('/home/detalle-orden');
   };
 
+  const openManual = () => {
+    window.open('/EpichubManual.pdf', '_blank');
+  };
+
   const isHomeRoute = ["/home", "/home/"].includes(location.pathname);
 
   const activeMenu = (() => {
@@ -184,7 +188,7 @@ const MySwal = withReactContent(Swal)
           className="logo-Nav"
         />
         <div className="right-section">
-          <button className="cart-button"><i className="pi pi-book"></i></button>
+          <button className="cart-button" onClick={openManual}><i className="pi pi-book"></i></button>
           <button onClick={(e) => {
             e.stopPropagation();
             setIsCarritoOpen(!isCarritoOpen);
