@@ -171,11 +171,37 @@
   font-size: 18px;
   margin-bottom: 20px;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 .sideMenu li.active {
   font-weight: 700;
-  text-decoration: underline;
+  /* text-decoration: underline; */
+  background-color: #ffffff47;
+  padding: 10px;
+  border-radius: 10px;
+  
+}
+.sideMenu li:hover {
+  padding: 5px;
+  border-radius: 10px;
+  transition: 0.2s;
+  transform: scale(1.1);
+;
+}
+
+.sideMenu li.under-development {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.sideMenu li.under-development:hover {
+  transform: none;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .sideMenu a {
@@ -187,7 +213,7 @@
 
 .sideMenu a.active {
   font-weight: 700;
-  text-decoration: underline;
+  /* text-decoration: underline; */
 }
 
 .hero {

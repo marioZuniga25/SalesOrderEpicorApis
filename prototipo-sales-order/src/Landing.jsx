@@ -233,17 +233,32 @@ const MySwal = withReactContent(Swal)
       {/* MENU LATERAL */}
       <nav ref={menuRef} className={`sideMenu ${menuOpen ? "show" : ""}`}>
         <ul>
-          <li className={activeMenu === "inicio" ? "active" : ""}>
-            <NavLink to="/home" end onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Inicio</NavLink>
+          <li className={activeMenu === "inicio" ? "active" : ""} style={{"display": "flex"}}>
+            <i className="pi pi-home" style={{"marginRight": "10px"}}></i><NavLink to="/home" end onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Inicio</NavLink>
           </li>
-          <li className={activeMenu === "productos" ? "active" : ""}>
-            <NavLink to="/home/productos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Existencias</NavLink>
+          <li className={activeMenu === "productos" ? "active" : ""} style={{"display": "flex"}}>
+            <i className="pi pi-box" style={{"marginRight": "10px"}}></i><NavLink to="/home/productos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Existencias</NavLink>
           </li>
-          <li className={activeMenu === "pedidos" ? "active" : ""}>
-            <NavLink to="/home/pedidos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Realizar Pedido</NavLink>
+          <li className={activeMenu === "pedidos" ? "active" : ""} style={{"display": "flex"}}>
+            <i className="pi pi-shopping-cart" style={{"marginRight": "10px"}}></i><NavLink to="/home/pedidos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Realizar Pedido</NavLink>
           </li>
-          <li className={activeMenu === "estadoPedidos" ? "active" : ""}>
-            <NavLink to="/home/estadoPedidos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Estado de Pedidos</NavLink>
+          <li className={activeMenu === "estadoPedidos" ? "active" : ""} style={{"display": "flex"}}>
+            <i className="pi pi-info-circle" style={{"marginRight": "10px"}}></i><NavLink to="/home/estadoPedidos" onClick={closeMenu} className={({ isActive }) => (isActive ? "active" : "")}>Estado de Pedidos</NavLink>
+          </li>
+          <li className="under-development" style={{"display": "flex"}} title="En desarrollo">
+            <i className="pi pi-cog" style={{"marginRight": "10px"}}></i>
+            <span>Estado de cuenta</span>
+            <i className="pi pi-hammer" style={{"marginLeft": "auto", "color": "#ffa500"}}></i>
+          </li>
+          <li className="under-development" style={{"display": "flex"}} title="En desarrollo">
+            <i className="pi pi-file" style={{"marginRight": "10px"}}></i>
+            <span>Guia de embarques</span>
+            <i className="pi pi-hammer" style={{"marginLeft": "auto", "color": "#ffa500"}}></i>
+          </li>
+          <li className="under-development" style={{"display": "flex"}} title="En desarrollo">
+            <i className="pi pi-file" style={{"marginRight": "10px"}}></i>
+            <span>Consultar comprobantes fiscales</span>
+            <i className="pi pi-hammer" style={{"marginLeft": "auto", "color": "#ffa500"}}></i>
           </li>
         </ul>
       </nav>

@@ -16,6 +16,7 @@ const DetalleOrden = () => {
     const poRef = useRef();
     const comentariosRef = useRef();
     const MySwal = withReactContent(Swal)
+    const [minDate, setMinDate] = useState(new Date().toISOString().split('T')[0]);
     const showAlert = () => {
         MySwal.fire({
             title: <p>Pedido completado✅</p>,
@@ -28,6 +29,22 @@ const DetalleOrden = () => {
         const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
         setCarrito(storedCarrito);
     }, []);
+
+    const validateDate = (selectedDate) => {
+        const today = new Date().toISOString().split('T')[0];
+        if (selectedDate < today) {
+            MySwal.fire({
+                title: 'Fecha inválida',
+                text: 'La fecha de necesidad no puede ser anterior a la fecha actual.',
+                icon: 'warning',
+                confirmButtonText: 'Entendido'
+            });
+            // Resetear la fecha al día actual
+            if (needbyRef.current) {
+                needbyRef.current.value = today;
+            }
+        }
+    };
 
     const eliminarProducto = (index) => {
         const newCarrito = carrito.filter((_, i) => i !== index);
@@ -199,7 +216,7 @@ const DetalleOrden = () => {
         <div>
             <h1>Detalle de la Orden</h1>
             <div className="orderhed">
-                <h3>Fecha de Necesidad: <input ref={needbyRef} id='needby' type="date" /></h3>
+                <h3>Fecha de Necesidad: <input ref={needbyRef} id='needby' type="date" min={minDate} onChange={(e) => validateDate(e.target.value)} /></h3>
                 {/* <h3>Cliente: <input ref={clienteRef} id='cliente' type="text" /></h3> */}
                 <h3>OC: <input ref={poRef} id='po' type="text" /></h3>
 
