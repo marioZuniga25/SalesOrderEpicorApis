@@ -23,17 +23,24 @@ const EstadoPedido = () => {
             "X-API-Key": "g9Hps4BsmlZ8XsfIopSvvan6baJCdC7z35ZbwVx0PDHDN"
         }
     }
-
+    const usuario = localStorage.getItem('username');
     useEffect(() => {
+        
         buscarPedidos();
+
     }, []);
 
-    const baseURLPedidos = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/PedidosTV/Data?%24filter=UD04_Key2%20eq%20%272%27"
+    const baseURLPedidos = `https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/PedidosTV/Data?%24filter=UD04_Key2%20eq%20%27${usuario}%27`;
     const baseurlDetallePedido = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/DetallePedidos/Data";
 
-    const buscarPedidos = async () => {
+    const buscarPedidos = async (search = '') => {
+        let url = baseURLPedidos;
+        if (search) {
+            url += `%20and%20UD04_Key3%20eq%20%27${search}%27`;
+        }
+        console.log("URL de la petición:", url);
         try {
-            const res = await axios.get(baseURLPedidos, config);
+            const res = await axios.get(url, config);
             setAllPedidos(res.data.value);
             setPedidos(res.data.value);
             setCurrentPage(1);
@@ -103,7 +110,11 @@ const EstadoPedido = () => {
 
     const handleSearchText = (query) => {
         setSearchText(query);
-        applyFilters(query, searchDate);
+    }
+
+    const handleSearchDate = (date) => {
+        setSearchDate(date);
+        applyFilters(searchText, date);
     }
 
     const handleItemsPerPageChange = (newItemsPerPage) => {
@@ -124,8 +135,9 @@ const EstadoPedido = () => {
             <div className='table-container'>
                 <div className="filtros">
                     <h3>Buscar Orden Compra: <input type="text" value={searchText} onChange={(e) => handleSearchText(e.target.value)} /></h3>
+                    <button onClick={() => buscarPedidos(searchText)}>Buscar</button>
                     <h3>Fecha: <input type="date" value={searchDate} onChange={(e) => handleSearchDate(e.target.value)} /></h3>
-                    <button onClick={() => { setSearchText(''); setSearchDate(''); applyFilters('', ''); }}>Limpiar filtros</button>
+                    <button onClick={() => { setSearchText(''); setSearchDate(''); buscarPedidos(); }}>Limpiar filtros</button>
                     <label style={{ marginLeft: '20px' }}>Registros por página:
                         <select value={itemsPerPage} onChange={(e) => handleItemsPerPageChange(parseInt(e.target.value))} style={{ marginLeft: '5px' }}>
                             <option value={5}>5</option>
