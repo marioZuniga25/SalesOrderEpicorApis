@@ -16,6 +16,9 @@ const EstadoPedido = () => {
     const [currentPageDetalle, setCurrentPageDetalle] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [itemsPerPageDetalle, setItemsPerPageDetalle] = useState(10);
+    const [fieldLinea, setFieldLinea] = useState('UD03_Key2');
+    const [fieldParte, setFieldParte] = useState('UD03_Key3');
+    const [fieldCantidad, setFieldCantidad] = useState('UD03_Number01');
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -32,6 +35,7 @@ const EstadoPedido = () => {
 
     const baseURLPedidos = `https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/PedidosTV/Data?%24filter=UD04_Key2%20eq%20%27${usuario}%27`;
     const baseurlDetallePedido = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/DetallePedidos/Data";
+    const baseUrlDetalleOrden = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/OrderDtls/Data";
 
     const buscarPedidos = async (search = '') => {
         let url = baseURLPedidos;
@@ -54,7 +58,11 @@ const EstadoPedido = () => {
     const detallesPedido = (pedido) => {
         setSelectedPedido(pedido);
         const pedidoId = pedido.UD04_Key1;
-        axios.get(`${baseurlDetallePedido}?Pedido=${pedidoId}`, config)
+        if (pedido.UD04_Character02 && !isNaN(pedido.UD04_Character02)){
+            setFieldLinea('OrderDtl_OrderLine');
+            setFieldParte('OrderDtl_PartNum');
+            setFieldCantidad('OrderDtl_OrderQty');
+            axios.get(`${baseUrlDetalleOrden}?OrderNum=${pedido.UD04_Character02}`, config)
             .then(res => {
                 console.log("Detalles del pedido:", res.data.value);
                 setDetallePedido(res.data.value);
@@ -64,6 +72,22 @@ const EstadoPedido = () => {
                 console.error("Error obteniendo detalles del pedido:", error);
             });
         console.log("Pedido seleccionado:", pedido);
+        }else{ 
+            setFieldLinea('UD03_Key2');
+            setFieldParte('UD03_Key3');
+            setFieldCantidad('UD03_Number01');
+            axios.get(`${baseurlDetallePedido}?Pedido=${pedidoId}`, config)
+            .then(res => {
+                console.log("Detalles del pedido:", res.data.value);
+                setDetallePedido(res.data.value);
+                setCurrentPageDetalle(1);
+            })
+            .catch(error => {
+                console.error("Error obteniendo detalles del pedido:", error);
+            });
+        console.log("Pedido seleccionado:", pedido);
+    }
+       
     }
 
     const cancelModal = () => {
@@ -223,9 +247,9 @@ const EstadoPedido = () => {
                             <tbody>
                                 {currentDetalleItems.map((item, index) => (
                                     <tr key={index}>
-                                        <td>{item.UD03_Key2}</td>
-                                        <td>{item.UD03_Key3}</td>
-                                        <td>{Number(item.UD03_Number01).toLocaleString('es-MX')}</td>
+                                        <td>{item[fieldLinea]}</td>
+                                        <td>{item[fieldParte]}</td>
+                                        <td>{Number(item[fieldCantidad]).toLocaleString('es-MX')}</td>
                                     </tr>
                                 ))}
                             </tbody>
