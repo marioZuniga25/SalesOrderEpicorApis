@@ -259,10 +259,17 @@ const MySwal = withReactContent(Swal)
             <span>Guia de embarques</span>
             <i className="pi pi-hammer" style={{"marginLeft": "auto", "color": "#ffa500"}}></i>
           </li>
-          <li className="under-development" style={{"display": "flex"}} title="En desarrollo">
+          <li style={{"display": "flex"}}>
             <i className="pi pi-file" style={{"marginRight": "10px"}}></i>
-            <span>Consultar comprobantes fiscales</span>
-            <i className="pi pi-hammer" style={{"marginLeft": "auto", "color": "#ffa500"}}></i>
+            <a
+              href="https://facturaxion4.flixamexico.com.mx/"
+              target="_blank"
+              rel="noreferrer"
+              onClick={closeMenu}
+              style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', width: '100%' }}
+            >
+              <span>Consultar comprobantes fiscales</span>
+            </a>
           </li>
         </ul>
       </nav>
