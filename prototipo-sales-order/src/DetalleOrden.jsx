@@ -55,7 +55,7 @@ const DetalleOrden = () => {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Basic MTkwMDktZXBpY29yOlRyYWluMTgh",
-            "X-API-Key": "g9Hps4BsmlZ8XsfIopSvvan6baJCdC7z35ZbwVx0PDHDN"
+            "X-API-Key": import.meta.env.VITE_API_KEY
         }
     }
 

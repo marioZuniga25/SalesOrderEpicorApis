@@ -18,7 +18,7 @@ const Productos = () => {
     headers: {
       "Content-Type": "application/json",
       "Authorization": "Basic MTkwMDktZXBpY29yOlRyYWluMTgh",
-      "X-API-Key": "g9Hps4BsmlZ8XsfIopSvvan6baJCdC7z35ZbwVx0PDHDN"
+      "X-API-Key": "MQirm93k5Nvi1L1JOn2FvH0Pmo8JYeAkJDDJmKXYAUkeb"
     }
   }
 const baseURLParts = "https://centralusdtedu00.epicorsaas.com/saas951/api/v2/odata/19009E6/BaqSvc/Existencias/Data"
