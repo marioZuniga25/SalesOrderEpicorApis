@@ -23,7 +23,7 @@ const EstadoPedido = () => {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Basic MTkwMDktZXBpY29yOlRyYWluMTgh",
-            "X-API-Key": import.meta.env.VITE_API_KEY
+            "X-API-Key": "MQirm93k5Nvi1L1JOn2FvH0Pmo8JYeAkJDDJmKXYAUkeb"
         }
     }
     const usuario = localStorage.getItem('username');
@@ -225,6 +225,7 @@ const EstadoPedido = () => {
                         <p><strong>OV:</strong> {selectedPedido.UD04_Character02 == '' || selectedPedido.UD04_Character02 == null || selectedPedido.UD04_Character02 == 'undefined' ? 'Orden de Venta no disponible' : selectedPedido.UD04_Character02}</p>
                         <p><strong>Orden de Compra:</strong> {selectedPedido.UD04_Key3}</p>
                         <p><strong>Estado:</strong> {selectedPedido.UD04_Character01}</p>
+                        <p><strong>Fecha de Necesidad:</strong> {selectedPedido.UD04_Date01 ? formatPedidoDate(selectedPedido.UD04_Date01) : 'S/F'}</p>
                         <h3>Partes del Pedido:</h3>
                         <div style={{ marginBottom: '10px' }}>
                             <label>Registros por página:
@@ -242,6 +243,7 @@ const EstadoPedido = () => {
                                     <th>Linea</th>
                                     <th>Parte</th>
                                     <th>Cantidad</th>
+                                    <th>Fecha de Necesidad</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -250,6 +252,7 @@ const EstadoPedido = () => {
                                         <td>{item[fieldLinea]}</td>
                                         <td>{item[fieldParte]}</td>
                                         <td>{Number(item[fieldCantidad]).toLocaleString('es-MX')}</td>
+                                        <td>{item.UD03_Date01 || item.Date01 || item.OrderDtl_Date01 || item.UD04_Date01 ? formatPedidoDate(item.UD03_Date01 || item.Date01 || item.OrderDtl_Date01 || item.UD04_Date01) : 'S/F'}</td>
                                     </tr>
                                 ))}
                             </tbody>
